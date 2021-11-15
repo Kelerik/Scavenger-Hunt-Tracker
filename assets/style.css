@@ -1,10 +1,17 @@
 * {
     box-sizing: border-box;
 }
+.ui-draggable.ui-draggable-dragging::before {
+    /* remove the list numbering */
+    content: " ";
+}
 .ui-draggable.ui-draggable-dragging {
     background: var(--bs-gray);
     color: var(--bs-light);
     border-radius: 5px;
     /* prevents text from wrapping when dragged out of container */
     width: 100%;
+}
+.card {
+    height: 100%;
 }
