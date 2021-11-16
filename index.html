@@ -66,8 +66,11 @@
                            >Information and Hint</label
                         >
                      </div>
-                     <button class="btn btn-primary w-100">
-                        Add Location <span class="oi oi-location"></span>
+                     <button
+                        class="btn btn-primary w-100"
+                        id="add-location-btn"
+                     >
+                        <span class="oi oi-location"></span> Add Location
                      </button>
                   </div>
                   <!-- player input form  -->
@@ -75,12 +78,12 @@
                      <div class="form-floating">
                         <input
                            class="form-control mb-2"
-                           id="location-player-input"
+                           id="player-name-input"
                         />
-                        <label for="location-player-input">Player Name</label>
+                        <label for="player-name-input">Player Name</label>
                      </div>
-                     <button class="btn btn-primary w-100">
-                        Add Player <span class="oi oi-person"></span>
+                     <button class="btn btn-primary w-100" id="add-player-btn">
+                        <span class="oi oi-person"></span> Add Player
                      </button>
                   </div>
                   <!-- instructions -->
@@ -103,6 +106,7 @@
 
                <!-- locations list area -->
                <div class="col pt-2">
+                  <!-- hidden dummy element to clone in jquery -->
                   <div
                      class="
                         cards-container
@@ -112,7 +116,7 @@
                         g-3
                      "
                   >
-                     <div class="col card-wrapper">
+                     <div class="col card-wrapper d-none">
                         <div class="card mb-4 border border-light border-3">
                            <div class="accordion-item">
                               <div class="accordion-header">
@@ -128,42 +132,24 @@
                                     type="button"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#placeholder-id"
-                                 >
-                                    Location
-                                 </button>
+                                 ></button>
                               </div>
                               <div
                                  id="placeholder-id"
                                  class="accordion-collapse collapse"
                               >
-                                 <div class="accordion-body">
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Nobis incidunt saepe
-                                    quibusdam possimus amet, quam harum omnis
-                                    repellendus dolorum accusamus ratione
-                                    placeat quod inventore repudiandae vero
-                                    numquam rerum dignissimos eligendi.
-                                 </div>
+                                 <div class="accordion-body"></div>
                               </div>
                            </div>
                            <ol
                               class="
                                  list-group list-group-flush list-group-numbered
                               "
-                           >
-                              <li class="list-group-item" data-location="0">
-                                 John
-                              </li>
-                              <li class="list-group-item" data-location="0">
-                                 Smith
-                              </li>
-                              <li class="list-group-item" data-location="0">
-                                 Billy
-                              </li>
-                           </ol>
+                           ></ol>
                         </div>
                      </div>
                   </div>
+                  <!-- dummy element end -->
                </div>
                <!-- locations list area end -->
             </div>
