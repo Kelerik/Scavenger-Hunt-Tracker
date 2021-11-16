@@ -1,112 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Scavenger Hunt Tracker</title>
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
-            integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-        />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css"
-            integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-        />
-        <link rel="stylesheet" href="./assets/style.css" />
-    </head>
-    <body>
-        <header class="container-fluid bg-dark text-light text-center p-4">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Scavenger Hunt Tracker</title>
+      <link
+         rel="stylesheet"
+         href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+         integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      />
+      <link
+         rel="stylesheet"
+         href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css"
+         integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      />
+      <link
+         rel="stylesheet"
+         href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css"
+         integrity="sha512-UyNhw5RNpQaCai2EdC+Js0QL4RlVmiq41DkmCJsRV3ZxipG2L0HhTqIf/H9Hp8ez2EnFlkBnjRGJU2stW3Lj+w=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      />
+      <link rel="stylesheet" href="./assets/style.css" />
+   </head>
+
+   <body>
+      <div class="min-vh-100 d-flex flex-column">
+         <header class="container-fluid bg-dark text-light text-center p-4">
             <h1>Scavenger Hunt Tracker</h1>
-        </header>
-        <main class="container">
-            <div
-                class="
-                    row
-                    rol-cols-1
-                    row-cols-md-2 row-cols-lg-3 row-cols-xl-4
-                    g-3
-                "
-            >
-                <div class="col">
-                    <div class="card mt-4 border border-light border-3">
-                        <div class="accordion-item">
-                            <div class="accordion-header">
-                                <button
+         </header>
+         <main class="container-fluid flex-fill d-flex">
+            <div class="row">
+               <!-- side bar -->
+               <div
+                  class="
+                     col-12 col-sm-4 col-xxl-3
+                     bg-secondary
+                     p-3
+                     d-flex
+                     flex-column
+                     justify-content-between
+                  "
+               >
+                  <!-- location input form  -->
+                  <div>
+                     <div class="form-floating">
+                        <input
+                           class="form-control mb-2"
+                           id="location-name-input"
+                        />
+                        <label for="location-name-input">Location Name</label>
+                     </div>
+                     <div class="form-floating mb-2">
+                        <textarea
+                           class="form-control"
+                           id="location-info-input"
+                           style="height: 100px"
+                        ></textarea>
+                        <label for="location-info-input"
+                           >Information and Hint</label
+                        >
+                     </div>
+                     <button class="btn btn-primary w-100">
+                        Add Location <span class="oi oi-location"></span>
+                     </button>
+                  </div>
+                  <!-- player input form  -->
+                  <div>
+                     <div class="form-floating">
+                        <input
+                           class="form-control mb-2"
+                           id="location-player-input"
+                        />
+                        <label for="location-player-input">Player Name</label>
+                     </div>
+                     <button class="btn btn-primary w-100">
+                        Add Player <span class="oi oi-person"></span>
+                     </button>
+                  </div>
+                  <!-- instructions -->
+                  <p class="lead text-light m-0">
+                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex
+                     possimus id, quasi quia et maxime sequi! Doloribus unde
+                     libero consequatur velit sunt alias, explicabo molestias
+                     ipsa sit repellendus harum recusandae.
+                  </p>
+                  <!-- timer and start/end -->
+                  <div id="timer-text">00:00</div>
+                  <div class="d-flex">
+                     <button class="btn btn-success flex-fill me-2">
+                        Start
+                     </button>
+                     <button class="btn btn-danger flex-fill ms-1">End</button>
+                  </div>
+               </div>
+               <!-- locations list area -->
+               <div class="col pt-2">
+                  <div
+                     class="
+                        cards-container
+                        row
+                        rol-cols-1
+                        row-cols-md-2 row-cols-lg-3 row-cols-xl-4
+                        g-3
+                     "
+                  >
+                     <div class="col card-wrapper">
+                        <div class="card mb-4 border border-light border-3">
+                           <div class="accordion-item">
+                              <div class="accordion-header">
+                                 <button
                                     class="
-                                        fs-5
-                                        fw-bold
-                                        accordion-button
-                                        collapsed
-                                        bg-info bg-gradient
+                                       p-2
+                                       fs-5
+                                       fw-bold
+                                       accordion-button
+                                       collapsed
+                                       bg-info bg-gradient
                                     "
                                     type="button"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#"
-                                >
+                                 >
                                     Location
-                                </button>
-                            </div>
-                            <div id="" class="accordion-collapse collapse">
-                                <div class="accordion-body">
+                                 </button>
+                              </div>
+                              <div id="" class="accordion-collapse collapse">
+                                 <div class="accordion-body">
                                     Lorem ipsum dolor sit amet consectetur
                                     adipisicing elit. Nobis incidunt saepe
                                     quibusdam possimus amet, quam harum omnis
                                     repellendus dolorum accusamus ratione
                                     placeat quod inventore repudiandae vero
                                     numquam rerum dignissimos eligendi.
-                                </div>
-                            </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <ol
+                              class="
+                                 list-group list-group-flush list-group-numbered
+                              "
+                           >
+                              <li class="list-group-item" data-location="0">
+                                 John
+                              </li>
+                              <li class="list-group-item" data-location="0">
+                                 Smith
+                              </li>
+                              <li class="list-group-item" data-location="0">
+                                 Billy
+                              </li>
+                           </ol>
                         </div>
-                        <ol
-                            class="
-                                list-group list-group-flush list-group-numbered
-                            "
-                        >
-                            <li class="list-group-item" data-location="0">
-                                John
-                            </li>
-                            <li class="list-group-item" data-location="0">
-                                Smith
-                            </li>
-                            <li class="list-group-item" data-location="0">
-                                Billy
-                            </li>
-                        </ol>
-                    </div>
-                </div>
+                     </div>
+                  </div>
+               </div>
             </div>
-        </main>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-            integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-        ></script>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
-            integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-        ></script>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"
-            integrity="sha512-nnzkI2u2Dy6HMnzMIkh7CPd1KX445z38XIu4jG1jGw7x5tSL3VBjE44dY4ihMU1ijAQV930SPM12cCFrB18sVw=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-        ></script>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.min.js"
-            integrity="sha512-OvBgP9A2JBgiRad/mM36mkzXSXaJE9BEIENnVEmeZdITvwT09xnxLtT4twkCa8m/loMbPHsvPl0T8lRGVBwjlQ=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-        ></script>
-        <script src="./assets/script.js"></script>
-    </body>
+         </main>
+      </div>
+      <script
+         src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      ></script>
+      <script
+         src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+         integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      ></script>
+      <script
+         src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"
+         integrity="sha512-nnzkI2u2Dy6HMnzMIkh7CPd1KX445z38XIu4jG1jGw7x5tSL3VBjE44dY4ihMU1ijAQV930SPM12cCFrB18sVw=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      ></script>
+      <script
+         src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.min.js"
+         integrity="sha512-OvBgP9A2JBgiRad/mM36mkzXSXaJE9BEIENnVEmeZdITvwT09xnxLtT4twkCa8m/loMbPHsvPl0T8lRGVBwjlQ=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      ></script>
+      <script src="./assets/script.js"></script>
+   </body>
 </html>

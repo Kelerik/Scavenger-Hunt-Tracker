@@ -1,17 +1,22 @@
 * {
-    box-sizing: border-box;
+   box-sizing: border-box;
 }
 .ui-draggable.ui-draggable-dragging::before {
-    /* remove the list numbering */
-    content: " ";
+   /* remove the list numbering */
+   content: " ";
 }
 .ui-draggable.ui-draggable-dragging {
-    background: var(--bs-gray);
-    color: var(--bs-light);
-    border-radius: 5px;
-    /* prevents text from wrapping when dragged out of container */
-    width: 100%;
+   background: var(--bs-success);
+   color: var(--bs-light);
+   border-radius: 5px;
+   /* prevents text from wrapping when dragged out of container */
+   width: 100%;
 }
 .card {
-    height: 100%;
+   height: 100%;
+}
+#timer-text {
+   text-align: center;
+   font-size: 9rem;
+   color: var(--bs-light);
 }
