@@ -1,6 +1,12 @@
 * {
    box-sizing: border-box;
 }
+.ui-draggable {
+   cursor: move;
+}
+.ui-draggable-disabled {
+   cursor: not-allowed;
+}
 .ui-draggable.ui-draggable-dragging::before {
    /* remove the list numbering */
    content: " ";
@@ -9,6 +15,7 @@
    background: var(--bs-success);
    color: var(--bs-light);
    border-radius: 5px;
+   cursor: none;
    /* prevents text from wrapping when dragged out of container */
    width: 100%;
 }

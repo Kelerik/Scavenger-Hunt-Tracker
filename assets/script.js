@@ -44,19 +44,19 @@ $(".card-wrapper").each(function (i) {
       .append(" " + (i + 1));
 });
 
-// make each card a droppable target for the dragged elements
+// make each card a droppable target for draggable elements
 $(".card").each(function (i) {
    $(this).droppable({
       // only accept items from the previous list
       accept: ".list-group-item[data-location='" + (i - 1) + "']",
       drop: function (event, ui) {
-         // when item is dropped, append a copy of it to the list
+         // when item is dropped, create a copy of it
          var newListItem = ui.draggable.clone();
          // assign new data-location number
          newListItem.attr("data-location", i);
-         // append item to the list
+         // append it to the list
          $(this).find("ol").append(newListItem);
-         // make that new item draggable
+         // make it draggable
          makeDraggable(newListItem);
          // make original item no longer draggable
          ui.draggable.draggable("disable");
