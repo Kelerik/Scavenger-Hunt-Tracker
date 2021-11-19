@@ -36,6 +36,7 @@ function appendPlayer(locationId, playerName) {
    // create new element with appropriate attributes
    var newPlayerElement = $(
       '<li class="list-group-item" data-uid="' +
+         // must convert into a number to avoid certain characters breaking code
          createUID(playerName) +
          '" data-status="pending" data-location="' +
          locationId +
@@ -66,11 +67,11 @@ function loadLocalStorage() {
             "data-status",
             "progressed"
          );
-         $("li[data-uid='" + searchUID + "']").addClass("bg-success");
+         $("li[data-uid='" + searchUID + "']").addClass("progressed");
          // then change the last one back to pending
          $("li[data-uid='" + searchUID + "']")
             .last()
-            .removeClass("bg-success");
+            .removeClass("progressed");
          $("li[data-uid='" + searchUID + "']")
             .last()
             .attr("data-status", "pending");
@@ -102,7 +103,7 @@ function deleteEverything() {
    location.reload();
 }
 
-// create unique ID from string
+// create unique ID from string using character codes. used for string sanitization
 function createUID(string) {
    var newUID = "";
    for (let i = 0; i < string.length; i++) {
@@ -154,7 +155,7 @@ $("#cards-container").on(
       var clickedName = $(event.target).text();
       var nextLocation = parseInt($(event.target).attr("data-location")) + 1;
       $(event.target).attr("data-status", "progressed");
-      $(event.target).addClass("bg-success");
+      $(event.target).addClass("progressed");
       // check if more progress is available
       if (locationsArray.length > nextLocation) {
          appendPlayer(nextLocation, clickedName);

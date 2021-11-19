@@ -15,6 +15,11 @@ main {
 .sidebar-container {
    height: 95vh;
 }
-li[data-status="pending"] {
+li[data-status="pending"]:hover {
    cursor: pointer;
+   background: var(--bs-gray-300);
+}
+.progressed {
+   background: var(--bs-green);
+   color: var(--bs-light);
 }
