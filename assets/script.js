@@ -1,3 +1,6 @@
+// timer
+var timer = 0;
+var timerActive = false;
 // global variable containing all the data
 var locationsArray = [];
 
@@ -52,6 +55,7 @@ function appendPlayer(locationId, playerName) {
 
 // load localstorage
 function loadLocalStorage() {
+   // load location data
    var loadedData = JSON.parse(localStorage.getItem("savedScavengerHuntData"));
    if (loadedData != undefined) {
       // build cards from loaded data
@@ -77,6 +81,12 @@ function loadLocalStorage() {
             .attr("data-status", "pending");
       });
    }
+
+   // load timer data
+   var loadedTimer = JSON.parse(localStorage.getItem("timer"));
+   if (loadedTimer != undefined) {
+      timer = loadedTimer;
+   }
 }
 
 // save localstorage
@@ -85,6 +95,7 @@ function saveLocalStorage() {
       "savedScavengerHuntData",
       JSON.stringify(locationsArray)
    );
+   localStorage.setItem("timer", JSON.stringify(timer));
 }
 
 // delete all players
@@ -110,6 +121,20 @@ function createUID(string) {
       newUID += string.charCodeAt(i);
    }
    return newUID;
+}
+
+// update the timer display
+function updateTimer() {
+   var minutes = Math.floor(timer / 60);
+   var seconds = Math.floor(timer % 60);
+   // zero padding
+   if (minutes < 10) {
+      minutes = "0" + minutes;
+   }
+   if (seconds < 10) {
+      seconds = "0" + seconds;
+   }
+   $("#timer-text").text(minutes + ":" + seconds);
 }
 
 // add location submit listener
@@ -138,11 +163,11 @@ $("#player-form").on("submit", function (event) {
    }
 });
 
-// delete buttons listener
-$("#delete-buttons").on("click", function (event) {
-   if ($(event.target).attr("data-delete") === "players") {
+// delete buttons click listener
+$("#delete-buttons").on("click", "button", function (event) {
+   if ($(event.target).id("id") === "delete-players-btn") {
       deletePlayers();
-   } else if ($(event.target).attr("data-delete") === "everything") {
+   } else if ($(event.target).attr("id") === "delete-everything-btn") {
       deleteEverything();
    }
 });
@@ -163,6 +188,27 @@ $("#cards-container").on(
       }
    }
 );
+
+// timer buttons click listener
+$("#timer-buttons").on("click", "button", function (event) {
+   if ($(event.target).attr("id") === "timer-start-btn") {
+      timer = 0;
+      timerActive = true;
+   } else if ($(event.target).attr("id") === "timer-stop-btn") {
+      timerActive = false;
+   }
+});
+
+// auto fit timer text size
+$("#timer-text").fitText(0.35);
+
+// timer
+setInterval(function () {
+   if (timerActive) {
+      timer++;
+      updateTimer();
+   }
+}, 1000);
 
 // load
 loadLocalStorage();

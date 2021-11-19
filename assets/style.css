@@ -9,7 +9,7 @@ main {
 }
 #timer-text {
    text-align: center;
-   font-size: 9rem;
+   font-size: 8rem;
    color: var(--bs-light);
 }
 .sidebar-container {
@@ -22,4 +22,9 @@ li[data-status="pending"]:hover {
 .progressed {
    background: var(--bs-green);
    color: var(--bs-light);
+}
+@media screen and (max-width: 768px) {
+   #instructions {
+      display: none;
+   }
 }
