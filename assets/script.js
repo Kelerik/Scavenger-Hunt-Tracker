@@ -1,6 +1,7 @@
+// global variable containing all the data
 var locationsArray = [];
 
-// clone the first card and apply new ID number and data-location number
+// create new location card and apply new ID number and data-location number
 function newLocation(locationName, locationInfo, locationPlayers) {
    // add to array
    locationsArray.push({
@@ -20,14 +21,14 @@ function newLocation(locationName, locationInfo, locationPlayers) {
    cloneCard.find("button").attr("data-bs-target", "#accordion-panel-" + newId);
    cloneCard.find("button").text(newId + 1 + ". " + locationName);
    cloneCard.find(".accordion-body").text(locationInfo);
-   // add player(s) to list
+   // add player(s) to list (if argument passed)
    if (locationPlayers != undefined) {
       locationPlayers.forEach(function (item) {
          appendPlayer(newId, item);
       });
    }
 
-   // make new card a droppable target. this needs to be run every time a new card is added
+   // make the new element a droppable target
    cloneCard.droppable({
       // only accept items from the previous list
       accept: ".list-group-item[data-location='" + (newId - 1) + "']",
@@ -50,8 +51,11 @@ function newLocation(locationName, locationInfo, locationPlayers) {
    });
 }
 
+// append player list item
 function appendPlayer(locationId, playerName) {
+   // add to array
    locationsArray[locationId].players.push(playerName);
+   // create new element with appropriate attributes
    var newPlayerElement = $(
       '<li class="list-group-item" data-location="' +
          locationId +
@@ -59,9 +63,11 @@ function appendPlayer(locationId, playerName) {
          playerName +
          "</li>"
    );
+   // append element
    $("#card-" + locationId)
       .find("ol")
       .append(newPlayerElement);
+   // make it draggable
    makeDraggable(newPlayerElement);
 }
 

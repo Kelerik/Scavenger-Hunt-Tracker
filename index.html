@@ -30,12 +30,21 @@
    </head>
 
    <body>
-      <div class="min-vh-100 d-flex flex-column">
-         <header class="container-fluid bg-dark text-light text-center p-4">
+      <div class="vh-100">
+         <header
+            class="
+               container-fluid
+               bg-dark
+               text-light
+               justify-content-center
+               d-flex
+               align-items-center
+            "
+         >
             <h1>Scavenger Hunt Tracker</h1>
          </header>
-         <main class="container-fluid flex-fill d-flex">
-            <div class="row">
+         <main class="container-fluid">
+            <div class="row h-100">
                <!-- side bar -->
                <div
                   class="
@@ -48,7 +57,7 @@
                   "
                >
                   <!-- location input form  -->
-                  <div>
+                  <form id="location-form">
                      <div class="form-floating">
                         <input
                            class="form-control mb-2"
@@ -72,9 +81,9 @@
                      >
                         <span class="oi oi-location"></span> Add Location
                      </button>
-                  </div>
+                  </form>
                   <!-- player input form  -->
-                  <div>
+                  <form id="player-form">
                      <div class="form-floating">
                         <input
                            class="form-control mb-2"
@@ -85,7 +94,7 @@
                      <button class="btn btn-primary w-100" id="add-player-btn">
                         <span class="oi oi-person"></span> Add Player
                      </button>
-                  </div>
+                  </form>
                   <!-- instructions -->
                   <p class="lead text-light m-0">
                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex
@@ -105,7 +114,7 @@
                <!-- sidebar end -->
 
                <!-- locations list area -->
-               <div class="col pt-2">
+               <div class="col pt-2 card-scroller h-100">
                   <!-- hidden dummy element to clone in jquery -->
                   <div
                      class="

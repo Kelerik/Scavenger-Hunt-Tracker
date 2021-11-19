@@ -1,6 +1,26 @@
 * {
    box-sizing: border-box;
 }
+header {
+   height: 10vh;
+}
+main {
+   height: 90vh;
+}
+.card {
+   height: 100%;
+}
+#timer-text {
+   text-align: center;
+   font-size: 9rem;
+   color: var(--bs-light);
+}
+.sidebar-container {
+   height: 95vh;
+}
+.card-scroller {
+   overflow: auto;
+}
 .ui-draggable {
    cursor: move;
 }
@@ -18,12 +38,4 @@
    cursor: none;
    /* prevents text from wrapping when dragged out of container */
    width: 100%;
-}
-.card {
-   height: 100%;
-}
-#timer-text {
-   text-align: center;
-   font-size: 9rem;
-   color: var(--bs-light);
 }
