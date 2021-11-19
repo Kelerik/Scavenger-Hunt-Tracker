@@ -78,6 +78,7 @@
                      <button
                         class="btn btn-primary w-100"
                         id="add-location-btn"
+                        type="submit"
                      >
                         <span class="oi oi-location"></span> Add Location
                      </button>
@@ -91,7 +92,11 @@
                         />
                         <label for="player-name-input">Player Name</label>
                      </div>
-                     <button class="btn btn-primary w-100" id="add-player-btn">
+                     <button
+                        class="btn btn-primary w-100"
+                        type="submit"
+                        id="add-player-btn"
+                     >
                         <span class="oi oi-person"></span> Add Player
                      </button>
                   </form>
@@ -114,11 +119,11 @@
                <!-- sidebar end -->
 
                <!-- locations list area -->
-               <div class="col pt-2 card-scroller h-100">
+               <div class="col pt-2 overflow-auto h-100">
                   <!-- hidden dummy element to clone in jquery -->
                   <div
+                     id="cards-container"
                      class="
-                        cards-container
                         row
                         rol-cols-1
                         row-cols-md-2 row-cols-lg-3 row-cols-xl-4
@@ -150,11 +155,7 @@
                                  <div class="accordion-body"></div>
                               </div>
                            </div>
-                           <ol
-                              class="
-                                 list-group list-group-flush list-group-numbered
-                              "
-                           ></ol>
+                           <ol class="list-group list-group-numbered"></ol>
                         </div>
                      </div>
                   </div>
@@ -170,12 +171,12 @@
          crossorigin="anonymous"
          referrerpolicy="no-referrer"
       ></script>
-      <script
+      <!-- <script
          src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
          integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
          crossorigin="anonymous"
          referrerpolicy="no-referrer"
-      ></script>
+      ></script> -->
       <script
          src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"
          integrity="sha512-nnzkI2u2Dy6HMnzMIkh7CPd1KX445z38XIu4jG1jGw7x5tSL3VBjE44dY4ihMU1ijAQV930SPM12cCFrB18sVw=="

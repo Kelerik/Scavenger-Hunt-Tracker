@@ -15,7 +15,7 @@ function newLocation(locationName, locationInfo, locationPlayers) {
    var cloneCard = $(".card-wrapper").first().clone();
    cloneCard.removeClass("d-none");
    cloneCard.find(".card").attr("data-location", newId);
-   cloneCard.appendTo(".cards-container");
+   cloneCard.appendTo("#cards-container");
    cloneCard.find(".card").attr("id", "card-" + newId);
    cloneCard.find(".accordion-collapse").attr("id", "accordion-panel-" + newId);
    cloneCard.find("button").attr("data-bs-target", "#accordion-panel-" + newId);
@@ -27,28 +27,6 @@ function newLocation(locationName, locationInfo, locationPlayers) {
          appendPlayer(newId, item);
       });
    }
-
-   // make the new element a droppable target
-   cloneCard.droppable({
-      // only accept items from the previous list
-      accept: ".list-group-item[data-location='" + (newId - 1) + "']",
-      drop: function (event, ui) {
-         // when item is dropped, create a copy of it
-         var newListItem = ui.draggable.clone();
-         // assign new data-location number
-         newListItem.attr("data-location", newId);
-         // append it to the list
-         locationsArray[newId].players.push(newListItem.text());
-         $(this).find("ol").append(newListItem);
-         // make it draggable
-         makeDraggable(newListItem);
-         // make original item no longer draggable
-         ui.draggable.draggable("disable");
-         ui.draggable.addClass("bg-secondary text-light");
-         // save
-         saveLocalStorage();
-      },
-   });
 }
 
 // append player list item
@@ -57,7 +35,9 @@ function appendPlayer(locationId, playerName) {
    locationsArray[locationId].players.push(playerName);
    // create new element with appropriate attributes
    var newPlayerElement = $(
-      '<li class="list-group-item" data-location="' +
+      '<li class="list-group-item" data-name="' +
+         playerName +
+         '" data-status="pending" data-location="' +
          locationId +
          '">' +
          playerName +
@@ -67,40 +47,27 @@ function appendPlayer(locationId, playerName) {
    $("#card-" + locationId)
       .find("ol")
       .append(newPlayerElement);
-   // make it draggable
-   makeDraggable(newPlayerElement);
-}
-
-// make an object draggable
-// we assume this function is only ever used on list items inside the cards
-function makeDraggable(objectParam) {
-   objectParam.draggable({
-      helper: "clone",
-      zIndex: 100,
-      revert: "invalid",
-      revertDuration: 100,
-      start: function () {
-         // get the number of the next location
-         var nextLocation = parseInt($(this).attr("data-location")) + 1;
-         // then highlight it
-         $(".card[data-location='" + nextLocation + "']").toggleClass(
-            "border-light border-success"
-         );
-      },
-      stop: function () {
-         $(".card").removeClass("border-success");
-         $(".card").addClass("border-light");
-      },
-   });
 }
 
 // load localstorage
 function loadLocalStorage() {
    var loadedData = JSON.parse(localStorage.getItem("savedScavengerHuntData"));
    if (loadedData != undefined) {
+      // build cards from loaded data
       loadedData.forEach(function (item) {
          newLocation(item.name, item.info, item.players);
       });
+      // run through all players and fix their statuses
+      // index 0 because the first location has all the players
+      var playersList = locationsArray[0].players;
+      // NOTE: do not loop the last item
+      for (let i = 0; i < playersList.length - 1; i++) {
+         $("li[data-name='" + playersList[i] + "']").attr(
+            "data-status",
+            "progressed"
+         );
+         $("li[data-name='" + playersList[i] + "']").addClass("bg-success");
+      }
    }
 }
 
@@ -112,8 +79,25 @@ function saveLocalStorage() {
    );
 }
 
-// add location button listener
-$("#add-location-btn").on("click", function () {
+// delete all players
+function wipePlayers() {
+   locationsArray.forEach(function (item) {
+      item.players = [];
+   });
+   saveLocalStorage();
+   location.reload();
+}
+
+// delete everything
+function wipeLocations() {
+   locationsArray = [];
+   saveLocalStorage();
+   location.reload();
+}
+
+// add location submit listener
+$("#location-form").on("submit", function (event) {
+   event.preventDefault();
    var newLocationName = $("#location-name-input").val();
    $("#location-name-input").val("");
    $("#location-name-input").trigger("focus");
@@ -125,8 +109,9 @@ $("#add-location-btn").on("click", function () {
    }
 });
 
-// add player button listener
-$("#add-player-btn").on("click", function () {
+// add player submit listener
+$("#add-player-btn").on("click", function (event) {
+   event.preventDefault();
    var newPlayerName = $("#player-name-input").val();
    $("#player-name-input").val("");
    $("#player-name-input").trigger("focus");
@@ -135,6 +120,23 @@ $("#add-player-btn").on("click", function () {
       saveLocalStorage();
    }
 });
+
+// player name list item click listener
+$("#cards-container").on(
+   "click",
+   "li[data-status='pending']",
+   function (event) {
+      var clickedName = $(event.target).text();
+      var nextLocation = parseInt($(event.target).attr("data-location")) + 1;
+      $(event.target).attr("data-status", "progressed");
+      $(event.target).addClass("bg-success");
+      // check if more progress is available
+      if (locationsArray.length > nextLocation) {
+         appendPlayer(nextLocation, clickedName);
+         saveLocalStorage();
+      }
+   }
+);
 
 // load
 loadLocalStorage();

@@ -7,9 +7,6 @@ header {
 main {
    height: 90vh;
 }
-.card {
-   height: 100%;
-}
 #timer-text {
    text-align: center;
    font-size: 9rem;
@@ -18,24 +15,6 @@ main {
 .sidebar-container {
    height: 95vh;
 }
-.card-scroller {
-   overflow: auto;
-}
-.ui-draggable {
-   cursor: move;
-}
-.ui-draggable-disabled {
-   cursor: not-allowed;
-}
-.ui-draggable.ui-draggable-dragging::before {
-   /* remove the list numbering */
-   content: " ";
-}
-.ui-draggable.ui-draggable-dragging {
-   background: var(--bs-success);
-   color: var(--bs-light);
-   border-radius: 5px;
-   cursor: none;
-   /* prevents text from wrapping when dragged out of container */
-   width: 100%;
+li[data-status="pending"] {
+   cursor: pointer;
 }
