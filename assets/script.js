@@ -35,8 +35,8 @@ function appendPlayer(locationId, playerName) {
    locationsArray[locationId].players.push(playerName);
    // create new element with appropriate attributes
    var newPlayerElement = $(
-      '<li class="list-group-item" data-name="' +
-         playerName +
+      '<li class="list-group-item" data-uid="' +
+         createUID(playerName) +
          '" data-status="pending" data-location="' +
          locationId +
          '">' +
@@ -58,16 +58,23 @@ function loadLocalStorage() {
          newLocation(item.name, item.info, item.players);
       });
       // run through all players and fix their statuses
-      // index 0 because the first location has all the players
-      var playersList = locationsArray[0].players;
-      // NOTE: do not loop the last item
-      for (let i = 0; i < playersList.length - 1; i++) {
-         $("li[data-name='" + playersList[i] + "']").attr(
+      // first location has all the players. use that list to get all the names
+      locationsArray[0].players.forEach(function (item) {
+         var searchUID = createUID(item);
+         // apply to all instances of the player
+         $("li[data-uid='" + searchUID + "']").attr(
             "data-status",
             "progressed"
          );
-         $("li[data-name='" + playersList[i] + "']").addClass("bg-success");
-      }
+         $("li[data-uid='" + searchUID + "']").addClass("bg-success");
+         // then change the last one back to pending
+         $("li[data-uid='" + searchUID + "']")
+            .last()
+            .removeClass("bg-success");
+         $("li[data-uid='" + searchUID + "']")
+            .last()
+            .attr("data-status", "pending");
+      });
    }
 }
 
@@ -80,7 +87,7 @@ function saveLocalStorage() {
 }
 
 // delete all players
-function wipePlayers() {
+function deletePlayers() {
    locationsArray.forEach(function (item) {
       item.players = [];
    });
@@ -89,19 +96,28 @@ function wipePlayers() {
 }
 
 // delete everything
-function wipeLocations() {
+function deleteEverything() {
    locationsArray = [];
    saveLocalStorage();
    location.reload();
 }
 
+// create unique ID from string
+function createUID(string) {
+   var newUID = "";
+   for (let i = 0; i < string.length; i++) {
+      newUID += string.charCodeAt(i);
+   }
+   return newUID;
+}
+
 // add location submit listener
 $("#location-form").on("submit", function (event) {
    event.preventDefault();
-   var newLocationName = $("#location-name-input").val();
+   var newLocationName = $("#location-name-input").val().trim();
    $("#location-name-input").val("");
    $("#location-name-input").trigger("focus");
-   var newLocationInfo = $("#location-info-input").val();
+   var newLocationInfo = $("#location-info-input").val().trim();
    $("#location-info-input").val("");
    if (newLocationName.length > 0 && newLocationInfo.length > 0) {
       newLocation(newLocationName, newLocationInfo);
@@ -110,14 +126,23 @@ $("#location-form").on("submit", function (event) {
 });
 
 // add player submit listener
-$("#add-player-btn").on("click", function (event) {
+$("#player-form").on("submit", function (event) {
    event.preventDefault();
-   var newPlayerName = $("#player-name-input").val();
+   var newPlayerName = $("#player-name-input").val().trim();
    $("#player-name-input").val("");
    $("#player-name-input").trigger("focus");
    if (newPlayerName.length > 0) {
       appendPlayer(0, newPlayerName);
       saveLocalStorage();
+   }
+});
+
+// delete buttons listener
+$("#delete-buttons").on("click", function (event) {
+   if ($(event.target).attr("data-delete") === "players") {
+      deletePlayers();
+   } else if ($(event.target).attr("data-delete") === "everything") {
+      deleteEverything();
    }
 });
 
