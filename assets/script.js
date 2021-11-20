@@ -57,7 +57,7 @@ function appendPlayer(locationId, playerName) {
 function loadLocalStorage() {
    // load location data
    var loadedData = JSON.parse(localStorage.getItem("savedScavengerHuntData"));
-   if (loadedData != undefined) {
+   if (loadedData != undefined && loadedData.length > 0) {
       // build cards from loaded data
       loadedData.forEach(function (item) {
          newLocation(item.name, item.info, item.players);
@@ -86,6 +86,7 @@ function loadLocalStorage() {
    var loadedTimer = JSON.parse(localStorage.getItem("timer"));
    if (loadedTimer != undefined) {
       timer = loadedTimer;
+      updateTimer();
    }
 }
 
@@ -96,22 +97,6 @@ function saveLocalStorage() {
       JSON.stringify(locationsArray)
    );
    localStorage.setItem("timer", JSON.stringify(timer));
-}
-
-// delete all players
-function deletePlayers() {
-   locationsArray.forEach(function (item) {
-      item.players = [];
-   });
-   saveLocalStorage();
-   location.reload();
-}
-
-// delete everything
-function deleteEverything() {
-   locationsArray = [];
-   saveLocalStorage();
-   location.reload();
 }
 
 // create unique ID from string using character codes. used for string sanitization
@@ -141,35 +126,44 @@ function updateTimer() {
 $("#location-form").on("submit", function (event) {
    event.preventDefault();
    var newLocationName = $("#location-name-input").val().trim();
-   $("#location-name-input").val("");
-   $("#location-name-input").trigger("focus");
    var newLocationInfo = $("#location-info-input").val().trim();
-   $("#location-info-input").val("");
    if (newLocationName.length > 0 && newLocationInfo.length > 0) {
+      $("#location-name-input").val("");
+      $("#location-info-input").val("");
       newLocation(newLocationName, newLocationInfo);
       saveLocalStorage();
    }
+   $("#location-name-input").trigger("focus");
 });
 
 // add player submit listener
 $("#player-form").on("submit", function (event) {
    event.preventDefault();
    var newPlayerName = $("#player-name-input").val().trim();
-   $("#player-name-input").val("");
-   $("#player-name-input").trigger("focus");
    if (newPlayerName.length > 0) {
+      $("#player-name-input").val("");
       appendPlayer(0, newPlayerName);
       saveLocalStorage();
    }
+   $("#player-name-input").trigger("focus");
 });
 
 // delete buttons click listener
-$("#delete-buttons").on("click", "button", function (event) {
-   if ($(event.target).id("id") === "delete-players-btn") {
-      deletePlayers();
-   } else if ($(event.target).attr("id") === "delete-everything-btn") {
-      deleteEverything();
+$("#delete-buttons").on("click", function (event) {
+   // check if the <span> element was clicked. if so, change the target element to its parent button
+   var targetElementId = $(event.target).attr("id");
+   if ($(event.target).is("span")) {
+      targetElementId = $(event.target).parent().attr("id");
    }
+   if (targetElementId === "delete-players-btn") {
+      locationsArray.forEach(function (item) {
+         item.players = [];
+      });
+   } else if (targetElementId === "delete-everything-btn") {
+      locationsArray = [];
+   }
+   saveLocalStorage();
+   location.reload();
 });
 
 // player name list item click listener
@@ -190,12 +184,33 @@ $("#cards-container").on(
 );
 
 // timer buttons click listener
-$("#timer-buttons").on("click", "button", function (event) {
-   if ($(event.target).attr("id") === "timer-start-btn") {
-      timer = 0;
+$("#timer-buttons").on("click", function (event) {
+   // check if the <span> element was clicked. if so, change the target element to its parent button
+   var targetElementId = $(event.target).attr("id");
+   if ($(event.target).is("span")) {
+      targetElementId = $(event.target).parent().attr("id");
+   }
+   // check which button was clicked
+   if (targetElementId === "timer-start-btn") {
+      $("#timer-start-btn").toggleClass("d-none");
+      $("#timer-stop-btn").toggleClass("d-none");
       timerActive = true;
-   } else if ($(event.target).attr("id") === "timer-stop-btn") {
+   } else if (targetElementId === "timer-stop-btn") {
+      $("#timer-stop-btn").toggleClass("d-none");
+      $("#timer-resume-btn").toggleClass("d-none");
+      $("#timer-reset-btn").toggleClass("d-none");
       timerActive = false;
+   } else if (targetElementId === "timer-resume-btn") {
+      $("#timer-resume-btn").toggleClass("d-none");
+      $("#timer-stop-btn").toggleClass("d-none");
+      $("#timer-reset-btn").toggleClass("d-none");
+      timerActive = true;
+   } else if (targetElementId === "timer-reset-btn") {
+      $("#timer-reset-btn").toggleClass("d-none");
+      $("#timer-start-btn").toggleClass("d-none");
+      $("#timer-resume-btn").toggleClass("d-none");
+      timer = 0;
+      updateTimer();
    }
 });
 

@@ -118,7 +118,7 @@
                   <!-- instructions -->
                   <p id="instructions" class="lead text-light m-0">
                      Add locations names along with its info and hint to the
-                     next location,t hen add player names to the list.
+                     next location, then add player names to the list.
                      <br /><br />Keep track of their progress by clicking their
                      name to advance them to the next location.
                   </p>
@@ -127,15 +127,27 @@
                   <div id="timer-buttons" class="d-flex">
                      <button
                         id="timer-start-btn"
-                        class="btn btn-success flex-fill me-2"
+                        class="btn btn-success flex-fill"
                      >
                         <span class="oi oi-media-play"></span> Start
                      </button>
                      <button
+                        id="timer-resume-btn"
+                        class="d-none btn btn-success flex-fill me-2"
+                     >
+                        <span class="oi oi-media-play"></span> Resume
+                     </button>
+                     <button
                         id="timer-stop-btn"
-                        class="btn btn-danger flex-fill ms-1"
+                        class="d-none btn btn-danger flex-fill"
                      >
                         <span class="oi oi-media-stop"></span> Stop
+                     </button>
+                     <button
+                        id="timer-reset-btn"
+                        class="d-none btn btn-danger flex-fill"
+                     >
+                        <span class="oi oi-timer"></span> Reset
                      </button>
                   </div>
                </div>
