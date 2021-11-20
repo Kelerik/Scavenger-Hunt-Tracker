@@ -15,11 +15,14 @@ main {
 .sidebar-container {
    height: 95vh;
 }
-li[data-status="pending"]:hover {
+.player-time {
+   float: right;
+}
+li[data-status="0"]:hover {
    cursor: pointer;
    background: var(--bs-gray-300);
 }
-.progressed {
+li[data-status="1"] {
    background: var(--bs-green);
    color: var(--bs-light);
 }

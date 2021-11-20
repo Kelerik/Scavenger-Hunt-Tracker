@@ -33,24 +33,36 @@ function newLocation(locationName, locationInfo, locationPlayers) {
 }
 
 // append player list item
-function appendPlayer(locationId, playerName) {
+function appendPlayer(locationId, playerObj) {
    // add to array
-   locationsArray[locationId].players.push(playerName);
+   locationsArray[locationId].players.push(playerObj);
    // create new element with appropriate attributes
-   var newPlayerElement = $(
+   var newListElement = $(
       '<li class="list-group-item" data-uid="' +
          // must convert into a number to avoid certain characters breaking code
-         createUID(playerName) +
-         '" data-status="pending" data-location="' +
+         playerObj.uid +
+         '" data-status="' +
+         playerObj.status +
+         '" data-location="' +
          locationId +
          '">' +
-         playerName +
+         playerObj.name +
          "</li>"
    );
-   // append element
+   // append the new element
    $("#card-" + locationId)
       .find("ol")
-      .append(newPlayerElement);
+      .append(newListElement);
+   // append the time to that element if higher than 0
+   if (playerObj.time > 0) {
+      $(newListElement).append(
+         $(
+            "<span class='player-time'>" +
+               formatTime(playerObj.time) +
+               "</span>"
+         )
+      );
+   }
 }
 
 // load localstorage
@@ -61,24 +73,6 @@ function loadLocalStorage() {
       // build cards from loaded data
       loadedData.forEach(function (item) {
          newLocation(item.name, item.info, item.players);
-      });
-      // run through all players and fix their statuses
-      // first location has all the players. use that list to get all the names
-      locationsArray[0].players.forEach(function (item) {
-         var searchUID = createUID(item);
-         // apply to all instances of the player
-         $("li[data-uid='" + searchUID + "']").attr(
-            "data-status",
-            "progressed"
-         );
-         $("li[data-uid='" + searchUID + "']").addClass("progressed");
-         // then change the last one back to pending
-         $("li[data-uid='" + searchUID + "']")
-            .last()
-            .removeClass("progressed");
-         $("li[data-uid='" + searchUID + "']")
-            .last()
-            .attr("data-status", "pending");
       });
    }
 
@@ -108,10 +102,10 @@ function createUID(string) {
    return newUID;
 }
 
-// update the timer display
-function updateTimer() {
-   var minutes = Math.floor(timer / 60);
-   var seconds = Math.floor(timer % 60);
+// format seconds to mm:ss
+function formatTime(timeInSeconds) {
+   var minutes = Math.floor(timeInSeconds / 60);
+   var seconds = Math.floor(timeInSeconds % 60);
    // zero padding
    if (minutes < 10) {
       minutes = "0" + minutes;
@@ -119,7 +113,12 @@ function updateTimer() {
    if (seconds < 10) {
       seconds = "0" + seconds;
    }
-   $("#timer-text").text(minutes + ":" + seconds);
+   return minutes + ":" + seconds;
+}
+
+// update the timer display
+function updateTimer() {
+   $("#timer-text").text(formatTime(timer));
 }
 
 // add location submit listener
@@ -142,7 +141,12 @@ $("#player-form").on("submit", function (event) {
    var newPlayerName = $("#player-name-input").val().trim();
    if (newPlayerName.length > 0) {
       $("#player-name-input").val("");
-      appendPlayer(0, newPlayerName);
+      appendPlayer(0, {
+         name: newPlayerName,
+         time: 0,
+         uid: createUID(newPlayerName),
+         status: 0,
+      });
       saveLocalStorage();
    }
    $("#player-name-input").trigger("focus");
@@ -167,21 +171,36 @@ $("#delete-buttons").on("click", function (event) {
 });
 
 // player name list item click listener
-$("#cards-container").on(
-   "click",
-   "li[data-status='pending']",
-   function (event) {
-      var clickedName = $(event.target).text();
-      var nextLocation = parseInt($(event.target).attr("data-location")) + 1;
-      $(event.target).attr("data-status", "progressed");
-      $(event.target).addClass("progressed");
-      // check if more progress is available
-      if (locationsArray.length > nextLocation) {
-         appendPlayer(nextLocation, clickedName);
-         saveLocalStorage();
+$("#cards-container").on("click", "li[data-status='0']", function (event) {
+   var clickedName = $(event.target).text();
+   var clickedLocation = parseInt($(event.target).attr("data-location"));
+   var nextLocation = clickedLocation + 1;
+   // loop through object array until finding a match
+   locationsArray[clickedLocation].players.forEach(function (item) {
+      if (item.name === clickedName) {
+         // update the array
+         item.status = 1;
+         item.time = timer;
+         return;
       }
+   });
+   // update the element
+   $(event.target).attr("data-status", "1");
+   $(event.target).attr("data-time", timer);
+   $(event.target).append(
+      $("<span class='player-time'>" + formatTime(timer) + "</span>")
+   );
+   // check if more progress is available
+   if (locationsArray.length > nextLocation) {
+      appendPlayer(nextLocation, {
+         name: clickedName,
+         time: 0,
+         uid: createUID(clickedName),
+         status: 0,
+      });
+      saveLocalStorage();
    }
-);
+});
 
 // timer buttons click listener
 $("#timer-buttons").on("click", function (event) {
@@ -212,6 +231,7 @@ $("#timer-buttons").on("click", function (event) {
       timer = 0;
       updateTimer();
    }
+   saveLocalStorage();
 });
 
 // auto fit timer text size
