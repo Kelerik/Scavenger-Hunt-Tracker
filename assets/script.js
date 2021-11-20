@@ -135,9 +135,17 @@ $("#location-form").on("submit", function (event) {
 // add player submit listener
 $("#player-form").on("submit", function (event) {
    event.preventDefault();
-   var newPlayerName = $("#player-name-input").val().trim();
+   var newPlayerName = $("#player-name-input").val().trim().toLowerCase();
+   // loop through object array to check if name already exists
+   locationsArray[0].players.forEach(function (item) {
+      if (item.name == newPlayerName) {
+         // make string empty and just let the rest of the function continue
+         newPlayerName = "";
+         // does not stop the entire function when using 'forEach()'
+         return;
+      }
+   });
    if (newPlayerName.length > 0) {
-      $("#player-name-input").val("");
       appendPlayer(0, {
          name: newPlayerName,
          time: 0,
@@ -146,6 +154,7 @@ $("#player-form").on("submit", function (event) {
       });
       saveLocalStorage();
    }
+   $("#player-name-input").val("");
    $("#player-name-input").trigger("focus");
 });
 
@@ -198,6 +207,24 @@ $("#cards-container").on("click", "li[data-status='0']", function (event) {
    }
    saveLocalStorage();
 });
+
+// player name list item mouseover listener
+// modified from https://stackoverflow.com/a/9827114
+$("#cards-container").on(
+   {
+      mouseenter: function () {
+         mouseOverUID = $(this).attr("data-uid");
+         $("li[data-uid='" + mouseOverUID + "']").addClass("player-highlight");
+      },
+      mouseleave: function () {
+         mouseOverUID = $(this).attr("data-uid");
+         $("li[data-uid='" + mouseOverUID + "']").removeClass(
+            "player-highlight"
+         );
+      },
+   },
+   "li"
+);
 
 // timer buttons click listener
 $("#timer-buttons").on("click", function (event) {

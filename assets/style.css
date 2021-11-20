@@ -12,11 +12,11 @@ main {
    font-size: 8rem;
    color: var(--bs-light);
 }
-.sidebar-container {
-   height: 95vh;
-}
 .player-time {
    float: right;
+}
+li {
+   text-transform: capitalize;
 }
 li[data-status="0"]:hover {
    cursor: pointer;
@@ -25,6 +25,10 @@ li[data-status="0"]:hover {
 li[data-status="1"] {
    background: var(--bs-green);
    color: var(--bs-light);
+}
+.player-highlight {
+   font-weight: bold;
+   text-decoration: underline;
 }
 @media screen and (max-width: 768px) {
    #instructions {
