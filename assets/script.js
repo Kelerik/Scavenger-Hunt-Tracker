@@ -68,7 +68,7 @@ function appendPlayer(locationId, playerObj) {
 // load localstorage
 function loadLocalStorage() {
    // load location data
-   var loadedData = JSON.parse(localStorage.getItem("savedScavengerHuntData"));
+   var loadedData = JSON.parse(localStorage.getItem("locations"));
    if (loadedData != undefined && loadedData.length > 0) {
       // build cards from loaded data
       loadedData.forEach(function (item) {
@@ -86,10 +86,7 @@ function loadLocalStorage() {
 
 // save localstorage
 function saveLocalStorage() {
-   localStorage.setItem(
-      "savedScavengerHuntData",
-      JSON.stringify(locationsArray)
-   );
+   localStorage.setItem("locations", JSON.stringify(locationsArray));
    localStorage.setItem("timer", JSON.stringify(timer));
 }
 
@@ -198,8 +195,8 @@ $("#cards-container").on("click", "li[data-status='0']", function (event) {
          uid: createUID(clickedName),
          status: 0,
       });
-      saveLocalStorage();
    }
+   saveLocalStorage();
 });
 
 // timer buttons click listener
