@@ -20,15 +20,17 @@ li {
 }
 li[data-status="0"]:hover {
    cursor: pointer;
-   background: var(--bs-gray-300);
 }
 li[data-status="1"] {
+   cursor: default;
    background: var(--bs-green);
    color: var(--bs-light);
 }
 .player-highlight {
-   font-weight: bold;
-   text-decoration: underline;
+   background: var(--bs-info) !important;
+}
+li[data-status="0"].player-highlight {
+   background: var(--bs-gray-400) !important;
 }
 @media screen and (max-width: 768px) {
    #instructions {
