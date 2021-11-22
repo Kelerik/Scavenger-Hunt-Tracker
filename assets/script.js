@@ -1,66 +1,61 @@
 // timer
 var timer = 0;
 var timerActive = false;
-// global variable containing all the data
-var locationsArray = [];
 
 // create new location card and apply new ID number and data-location number
 function newLocation(locationName, locationInfo, locationPlayers) {
-   // add to array
-   locationsArray.push({
-      name: locationName,
-      info: locationInfo,
-      players: [],
-   });
-   // get new number
-   var newId = locationsArray.length - 1;
-   // clone the dummy card and edit appropriate attributes
+   // clone the dummy card
    var cloneCard = $(".card-wrapper").first().clone();
+   // get new location number
+   var newLocId = $(".card-wrapper").length - 1;
+   // edit appropriate attributes
    cloneCard.removeClass("d-none");
-   cloneCard.find(".card").attr("data-location", newId);
+   cloneCard.find(".card").attr("data-location", newLocId);
    cloneCard.appendTo("#cards-container");
-   cloneCard.find(".card").attr("id", "card-" + newId);
-   cloneCard.find(".accordion-collapse").attr("id", "accordion-panel-" + newId);
-   cloneCard.find("button").attr("data-bs-target", "#accordion-panel-" + newId);
-   cloneCard.find("button").text(newId + 1 + ". " + locationName);
+   cloneCard.find(".card").attr("id", "card-" + newLocId);
+   cloneCard
+      .find(".accordion-collapse")
+      .attr("id", "accordion-panel-" + newLocId);
+   cloneCard
+      .find("button")
+      .attr("data-bs-target", "#accordion-panel-" + newLocId);
+   cloneCard.find("button").text(locationName);
    cloneCard.find(".accordion-body").text(locationInfo);
    // add player(s) to list (if argument passed)
    if (locationPlayers != undefined) {
       locationPlayers.forEach(function (item) {
-         appendPlayer(newId, item);
+         appendPlayer(newLocId, item);
       });
    }
 }
 
 // append player list item
 function appendPlayer(locationId, playerObj) {
-   // add to array
-   locationsArray[locationId].players.push(playerObj);
+   // create unique ID from name using character codes. used for string sanitization
+   var newUID = "";
+   for (let i = 0; i < playerObj.name.length; i++) {
+      newUID += playerObj.name.charCodeAt(i);
+   }
    // create new element with appropriate attributes
    var newListElement = $(
       '<li class="list-group-item" data-uid="' +
-         // must convert into a number to avoid certain characters breaking code
-         playerObj.uid +
+         newUID +
          '" data-status="' +
          playerObj.status +
          '" data-location="' +
          locationId +
-         '">' +
+         '"><span class="player-name">' +
          playerObj.name +
-         "</li>"
+         "</span></li>"
    );
    // append the new element
    $("#card-" + locationId)
       .find("ol")
       .append(newListElement);
-   // append the time to that element if higher than 0
-   if (playerObj.time > 0) {
+   // append the time if not blank
+   if (playerObj.time.length > 0) {
       $(newListElement).append(
-         $(
-            "<span class='player-time'>" +
-               formatTime(playerObj.time) +
-               "</span>"
-         )
+         "<span class='player-time'>" + playerObj.time + "</span>"
       );
    }
 }
@@ -86,17 +81,32 @@ function loadLocalStorage() {
 
 // save localstorage
 function saveLocalStorage() {
-   localStorage.setItem("locations", JSON.stringify(locationsArray));
+   var dataToSave = [];
+   // loop through all the cards to get the data
+   // remember to ignore the hidden dummy card
+   $(".card[id]").each(function () {
+      // loop through all the list items to get the player data
+      var playersList = [];
+      $(this)
+         .find("li")
+         .each(function () {
+            // add player array items one at a time
+            playersList.push({
+               name: $(this).find(".player-name").text(),
+               status: $(this).attr("data-status"),
+               time: $(this).find(".player-time").text(),
+            });
+         });
+      // add total card data to array
+      dataToSave.push({
+         name: $(this).find("button").text(),
+         info: $(this).find(".accordion-body").text(),
+         players: playersList,
+      });
+   });
+   console.log(dataToSave);
+   localStorage.setItem("locations", JSON.stringify(dataToSave));
    localStorage.setItem("timer", JSON.stringify(timer));
-}
-
-// create unique ID from string using character codes. used for string sanitization
-function createUID(string) {
-   var newUID = "";
-   for (let i = 0; i < string.length; i++) {
-      newUID += string.charCodeAt(i);
-   }
-   return newUID;
 }
 
 // format seconds to mm:ss
@@ -137,19 +147,20 @@ $("#player-form").on("submit", function (event) {
    event.preventDefault();
    var newPlayerName = $("#player-name-input").val().trim().toLowerCase();
    // loop through object array to check if name already exists
-   locationsArray[0].players.forEach(function (item) {
-      if (item.name == newPlayerName) {
-         // make string empty and just let the rest of the function continue
-         newPlayerName = "";
-         // does not stop the entire function when using 'forEach()'
-         return;
-      }
-   });
+   $("#card-0")
+      .find(".player-name")
+      .each(function () {
+         if ($(this).text() == newPlayerName) {
+            // make string empty and just let the rest of the function continue
+            newPlayerName = "";
+            // does not stop the entire function when using 'each()'
+            return;
+         }
+      });
    if (newPlayerName.length > 0) {
       appendPlayer(0, {
          name: newPlayerName,
          time: 0,
-         uid: createUID(newPlayerName),
          status: 0,
       });
       saveLocalStorage();
@@ -160,17 +171,12 @@ $("#player-form").on("submit", function (event) {
 
 // delete buttons click listener
 $("#delete-buttons").on("click", function (event) {
-   // check if the <span> element was clicked. if so, change the target element to its parent button
-   var targetElementId = $(event.target).attr("id");
-   if ($(event.target).is("span")) {
-      targetElementId = $(event.target).parent().attr("id");
-   }
-   if (targetElementId === "delete-players-btn") {
-      locationsArray.forEach(function (item) {
-         item.players = [];
-      });
-   } else if (targetElementId === "delete-everything-btn") {
-      locationsArray = [];
+   // use .closest() in case span element was clicked
+   var targetElement = $(event.target).closest("button");
+   if (targetElement.attr("id") === "delete-players-btn") {
+      $("li").remove();
+   } else if (targetElement.attr("id") === "delete-everything-btn") {
+      $(".card[id]").remove();
    }
    saveLocalStorage();
    location.reload();
@@ -178,30 +184,22 @@ $("#delete-buttons").on("click", function (event) {
 
 // player name list item click listener
 $("#cards-container").on("click", "li[data-status='0']", function (event) {
-   var clickedName = $(event.target).text();
-   var clickedLocation = parseInt($(event.target).attr("data-location"));
+   // use .closest() in case span element was clicked
+   var targetElement = $(event.target).closest("li");
+   var clickedName = targetElement.find(".player-name").text();
+   var clickedLocation = parseInt(targetElement.attr("data-location"));
    var nextLocation = clickedLocation + 1;
-   // loop through object array until finding a match
-   locationsArray[clickedLocation].players.forEach(function (item) {
-      if (item.name === clickedName) {
-         // update the array
-         item.status = 1;
-         item.time = timer;
-         return;
-      }
-   });
    // update the element
-   $(event.target).attr("data-status", "1");
-   $(event.target).attr("data-time", timer);
-   $(event.target).append(
-      $("<span class='player-time'>" + formatTime(timer) + "</span>")
-   );
+   targetElement.attr("data-status", "1");
+   targetElement.attr("data-time", timer);
+   $(event.target)
+      .closest("li")
+      .append($("<span class='player-time'>" + formatTime(timer) + "</span>"));
    // check if more progress is available
-   if (locationsArray.length > nextLocation) {
+   if ($(".card").length >= nextLocation) {
       appendPlayer(nextLocation, {
          name: clickedName,
          time: 0,
-         uid: createUID(clickedName),
          status: 0,
       });
    }

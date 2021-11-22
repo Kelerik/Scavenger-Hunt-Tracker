@@ -1,6 +1,10 @@
 * {
    box-sizing: border-box;
 }
+body {
+   counter-reset: locations;
+}
+
 header {
    height: 10vh;
 }
@@ -11,6 +15,11 @@ main {
    text-align: center;
    font-size: 8rem;
    color: var(--bs-light);
+}
+.accordion-button::before {
+   content: counters(locations, ".") ". ";
+   counter-increment: locations;
+   padding-right: 0.5rem;
 }
 .player-time {
    float: right;
