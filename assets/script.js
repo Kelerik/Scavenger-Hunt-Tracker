@@ -171,7 +171,7 @@ $("#player-form").on("submit", function (event) {
 
 // delete buttons click listener
 $("#delete-buttons").on("click", function (event) {
-   // use .closest() in case span element was clicked
+   // use .closest() in case child element was clicked
    var targetElement = $(event.target).closest("button");
    if (targetElement.attr("id") === "delete-players-btn") {
       $("li").remove();
@@ -184,7 +184,7 @@ $("#delete-buttons").on("click", function (event) {
 
 // player name list item click listener
 $("#cards-container").on("click", "li[data-status='0']", function (event) {
-   // use .closest() in case span element was clicked
+   // use .closest() in case child element was clicked
    var targetElement = $(event.target).closest("li");
    var clickedName = targetElement.find(".player-name").text();
    var clickedLocation = parseInt(targetElement.attr("data-location"));
