@@ -224,6 +224,24 @@ $("#cards-container").on(
    "li"
 );
 
+// player name list item context menu
+$("#cards-container").on("contextmenu", "li", function (event) {
+   event.preventDefault();
+   // check if context menu is already open
+   if ($("#contextMenu").hasClass("d-none")) {
+      $("#contextMenu").removeClass("d-none");
+      $("#contextMenu").css("left", event.pageX + "px");
+      $("#contextMenu").css("top", event.pageY + "px");
+   } else {
+      $("#contextMenu").addClass("d-none");
+   }
+});
+
+// hide context menu when clicking anywhere
+$("*").on("click", function () {
+   $("#contextMenu").addClass("d-none");
+});
+
 // timer buttons click listener
 $("#timer-buttons").on("click", function (event) {
    // check if the <span> element was clicked. if so, change the target element to its parent button

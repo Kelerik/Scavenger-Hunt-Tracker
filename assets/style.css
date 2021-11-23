@@ -41,6 +41,9 @@ li[data-status="1"] {
 li[data-status="0"].player-highlight {
    background: var(--bs-gray-400) !important;
 }
+li[data-status="0"]:active {
+   background: var(--bs-gray-500) !important;
+}
 @media screen and (max-width: 768px) {
    #instructions {
       display: none;
