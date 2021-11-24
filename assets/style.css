@@ -44,6 +44,24 @@ li[data-status="0"].player-highlight {
 li[data-status="0"]:active {
    background: var(--bs-gray-500) !important;
 }
+hr {
+   margin: 0.5rem;
+}
+.hover-info:hover {
+   background: var(--bs-info);
+   color: var(--bs-light);
+}
+.hover-warning:hover {
+   background: var(--bs-warning);
+   color: var(--bs-light);
+}
+.hover-danger:hover {
+   background: var(--bs-danger);
+   color: var(--bs-light);
+}
+#location-context-menu {
+   z-index: 9999;
+}
 @media screen and (max-width: 768px) {
    #instructions {
       display: none;

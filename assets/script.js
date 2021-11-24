@@ -224,22 +224,38 @@ $("#cards-container").on(
    "li"
 );
 
+// location name context menu
+$("#cards-container").on("contextmenu", "button", function (event) {
+   event.preventDefault();
+   $("#player-context-menu").addClass("d-none");
+   // check if context menu is already open
+   if ($("#location-context-menu").hasClass("d-none")) {
+      $("#location-context-menu").removeClass("d-none");
+      $("#location-context-menu").css("left", event.pageX + "px");
+      $("#location-context-menu").css("top", event.pageY + "px");
+   } else {
+      $("#location-context-menu").addClass("d-none");
+   }
+});
+
 // player name list item context menu
 $("#cards-container").on("contextmenu", "li", function (event) {
    event.preventDefault();
+   $("#location-context-menu").addClass("d-none");
    // check if context menu is already open
-   if ($("#contextMenu").hasClass("d-none")) {
-      $("#contextMenu").removeClass("d-none");
-      $("#contextMenu").css("left", event.pageX + "px");
-      $("#contextMenu").css("top", event.pageY + "px");
+   if ($("#player-context-menu").hasClass("d-none")) {
+      $("#player-context-menu").removeClass("d-none");
+      $("#player-context-menu").css("left", event.pageX + "px");
+      $("#player-context-menu").css("top", event.pageY + "px");
    } else {
-      $("#contextMenu").addClass("d-none");
+      $("#player-context-menu").addClass("d-none");
    }
 });
 
 // hide context menu when clicking anywhere
 $("*").on("click", function () {
-   $("#contextMenu").addClass("d-none");
+   $("#location-context-menu").addClass("d-none");
+   $("#player-context-menu").addClass("d-none");
 });
 
 // timer buttons click listener

@@ -193,26 +193,64 @@
                <!-- locations list area end -->
             </div>
          </main>
-         <!-- context menu -->
-         <div id="contextMenu" class="list-group d-none position-absolute">
+         <!-- location context menu -->
+         <div
+            id="location-context-menu"
+            class="list-group d-none position-absolute"
+         >
             <div class="list-group">
                <button
                   type="button"
-                  class="list-group-item list-group-item-action"
+                  class="list-group-item text-start hover-info"
                >
-                  A second item
+                  <i class="fas fa-edit"></i>
+                  Edit Name
                </button>
                <button
                   type="button"
-                  class="list-group-item list-group-item-action"
+                  class="list-group-item text-start hover-info"
                >
-                  A third button item
+                  <i class="fas fa-edit"></i>
+                  Edit Info
+               </button>
+               <div class="list-group-item"><hr /></div>
+               <button
+                  type="button"
+                  class="list-group-item text-start hover-danger"
+               >
+                  <i class="fas fa-trash-alt"></i>
+                  Delete
+               </button>
+            </div>
+         </div>
+         <!-- context menu end -->
+         <!-- player context menu -->
+         <div
+            id="player-context-menu"
+            class="list-group d-none position-absolute"
+         >
+            <div class="list-group">
+               <button
+                  type="button"
+                  class="list-group-item text-start hover-info"
+               >
+                  <i class="fas fa-edit"></i>
+                  Edit Name
                </button>
                <button
                   type="button"
-                  class="list-group-item list-group-item-action"
+                  class="list-group-item text-start hover-warning"
                >
-                  A fourth button item
+                  <i class="fas fa-undo"></i>
+                  Undo Progress
+               </button>
+               <div class="list-group-item"><hr /></div>
+               <button
+                  type="button"
+                  class="list-group-item text-start hover-danger"
+               >
+                  <i class="fas fa-trash-alt"></i>
+                  Delete
                </button>
             </div>
          </div>
