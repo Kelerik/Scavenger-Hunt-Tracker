@@ -71,7 +71,7 @@
                            class="form-control mb-2"
                            id="location-name-input"
                         />
-                        <label for="location-name-input">Location Name</label>
+                        <label for="location-name-input">Location name</label>
                      </div>
                      <div class="form-floating mb-2">
                         <textarea
@@ -80,15 +80,11 @@
                            style="height: 100px"
                         ></textarea>
                         <label for="location-info-input"
-                           >Information and Hint</label
+                           >Information and hint</label
                         >
                      </div>
-                     <button
-                        class="btn btn-primary w-100"
-                        id="add-location-btn"
-                        type="submit"
-                     >
-                        <i class="fas fa-location-arrow"></i> Add Location
+                     <button class="btn btn-primary w-100" type="submit">
+                        <i class="fas fa-location-arrow"></i> Add location
                      </button>
                   </form>
                   <!-- player input form  -->
@@ -98,14 +94,10 @@
                            class="form-control mb-2"
                            id="player-name-input"
                         />
-                        <label for="player-name-input">Player Name</label>
+                        <label for="player-name-input">Player name</label>
                      </div>
-                     <button
-                        class="btn btn-primary w-100"
-                        type="submit"
-                        id="add-player-btn"
-                     >
-                        <i class="fas fa-user-plus"></i> Add Player
+                     <button class="btn btn-primary w-100" type="submit">
+                        <i class="fas fa-user-plus"></i> Add player
                      </button>
                   </form>
                   <!-- instructions -->
@@ -203,9 +195,11 @@
                   type="button"
                   class="list-group-item text-start hover-info"
                   id="edit-location-name-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#name-modal"
                >
                   <i class="fas fa-edit"></i>
-                  Edit Name
+                  Edit name
                </button>
                <button
                   type="button"
@@ -213,7 +207,7 @@
                   id="edit-location-info-btn"
                >
                   <i class="fas fa-edit"></i>
-                  Edit Info
+                  Edit info
                </button>
                <div class="list-group-item"><hr /></div>
                <button
@@ -239,7 +233,7 @@
                   id="edit-player-name-btn"
                >
                   <i class="fas fa-edit"></i>
-                  Edit Name
+                  Edit name
                </button>
                <button
                   type="button"
@@ -247,7 +241,7 @@
                   id="undo-progress-btn"
                >
                   <i class="fas fa-undo"></i>
-                  Undo Progress
+                  Undo progress
                </button>
                <div class="list-group-item"><hr /></div>
                <button
@@ -261,6 +255,46 @@
             </div>
          </div>
          <!-- context menu end -->
+         <!-- modal -->
+         <div class="modal fade" id="name-modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+               <div class="modal-content">
+                  <form id="modal-form">
+                     <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+                        <button
+                           type="button"
+                           class="btn-close"
+                           data-bs-dismiss="modal"
+                        ></button>
+                     </div>
+                     <div class="modal-body">
+                        <div class="form-floating">
+                           <input class="form-control mb-2" id="modal-input" />
+                           <label for="modal-input">Enter new name</label>
+                        </div>
+                     </div>
+                     <div class="modal-footer">
+                        <button
+                           type="button"
+                           class="btn btn-secondary"
+                           data-bs-dismiss="modal"
+                        >
+                           Close
+                        </button>
+                        <button
+                           type="submit"
+                           class="btn btn-primary"
+                           data-bs-dismiss="modal"
+                        >
+                           Save changes
+                        </button>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+         <!-- modal end -->
       </div>
       <script
          src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"

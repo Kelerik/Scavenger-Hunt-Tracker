@@ -137,7 +137,6 @@ $("#location-form").on("submit", function (event) {
       $("#location-name-input").val("");
       $("#location-info-input").val("");
       newLocation(newLocationName, newLocationInfo);
-      saveLocalStorage();
    }
    $("#location-name-input").trigger("focus");
 });
@@ -167,6 +166,11 @@ $("#player-form").on("submit", function (event) {
    }
    $("#player-name-input").val("");
    $("#player-name-input").trigger("focus");
+});
+
+// edit modal submit listener
+$("#modal-form").on("submit", function (event) {
+   event.preventDefault();
 });
 
 // player name list item mouseover listener
@@ -255,6 +259,14 @@ $("body").on("click", function (event) {
       } else if (targetElementId === "delete-everything-btn") {
          $(".card[id]").remove();
          location.reload();
+      }
+      // context menu buttons
+      else if (targetElementId === "edit-location-name-btn") {
+      } else if (targetElementId === "edit-location-info-btn") {
+      } else if (targetElementId === "delete-location-btn") {
+      } else if (targetElementId === "edit-player-name-btn") {
+      } else if (targetElementId === "undo-progress-btn") {
+      } else if (targetElementId === "delete-player-btn") {
       }
       saveLocalStorage();
    }
