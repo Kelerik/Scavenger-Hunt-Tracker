@@ -169,43 +169,6 @@ $("#player-form").on("submit", function (event) {
    $("#player-name-input").trigger("focus");
 });
 
-// delete buttons click listener
-$("#delete-buttons").on("click", function (event) {
-   // use .closest() in case child element was clicked
-   var targetElement = $(event.target).closest("button");
-   if (targetElement.attr("id") === "delete-players-btn") {
-      $("li").remove();
-   } else if (targetElement.attr("id") === "delete-everything-btn") {
-      $(".card[id]").remove();
-   }
-   saveLocalStorage();
-   location.reload();
-});
-
-// player name list item click listener
-$("#cards-container").on("click", "li[data-status='0']", function (event) {
-   // use .closest() in case child element was clicked
-   var targetElement = $(event.target).closest("li");
-   var clickedName = targetElement.find(".player-name").text();
-   var clickedLocation = parseInt(targetElement.attr("data-location"));
-   var nextLocation = clickedLocation + 1;
-   // update the element
-   targetElement.attr("data-status", "1");
-   targetElement.attr("data-time", timer);
-   $(event.target)
-      .closest("li")
-      .append($("<span class='player-time'>" + formatTime(timer) + "</span>"));
-   // check if more progress is available
-   if ($(".card").length >= nextLocation) {
-      appendPlayer(nextLocation, {
-         name: clickedName,
-         time: 0,
-         status: 0,
-      });
-   }
-   saveLocalStorage();
-});
-
 // player name list item mouseover listener
 // modified from https://stackoverflow.com/a/9827114
 $("#cards-container").on(
@@ -258,36 +221,68 @@ $("*").on("click", function () {
    $("#player-context-menu").addClass("d-none");
 });
 
-// timer buttons click listener
-$("#timer-buttons").on("click", function (event) {
-   // check if the <span> element was clicked. if so, change the target element to its parent button
-   var targetElementId = $(event.target).attr("id");
-   if ($(event.target).is("span")) {
-      targetElementId = $(event.target).parent().attr("id");
+// click listener
+$("body").on("click", function (event) {
+   // buttons
+   var targetElementId = $(event.target).closest("button").attr("id");
+   if (targetElementId != undefined) {
+      // timer buttons
+      if (targetElementId === "timer-start-btn") {
+         $("#timer-start-btn").toggleClass("d-none");
+         $("#timer-stop-btn").toggleClass("d-none");
+         timerActive = true;
+      } else if (targetElementId === "timer-stop-btn") {
+         $("#timer-stop-btn").toggleClass("d-none");
+         $("#timer-resume-btn").toggleClass("d-none");
+         $("#timer-reset-btn").toggleClass("d-none");
+         timerActive = false;
+      } else if (targetElementId === "timer-resume-btn") {
+         $("#timer-resume-btn").toggleClass("d-none");
+         $("#timer-stop-btn").toggleClass("d-none");
+         $("#timer-reset-btn").toggleClass("d-none");
+         timerActive = true;
+      } else if (targetElementId === "timer-reset-btn") {
+         $("#timer-reset-btn").toggleClass("d-none");
+         $("#timer-start-btn").toggleClass("d-none");
+         $("#timer-resume-btn").toggleClass("d-none");
+         timer = 0;
+         updateTimer();
+      }
+      // delete buttons
+      else if (targetElementId === "delete-players-btn") {
+         $("li").remove();
+         location.reload();
+      } else if (targetElementId === "delete-everything-btn") {
+         $(".card[id]").remove();
+         location.reload();
+      }
+      saveLocalStorage();
    }
-   // check which button was clicked
-   if (targetElementId === "timer-start-btn") {
-      $("#timer-start-btn").toggleClass("d-none");
-      $("#timer-stop-btn").toggleClass("d-none");
-      timerActive = true;
-   } else if (targetElementId === "timer-stop-btn") {
-      $("#timer-stop-btn").toggleClass("d-none");
-      $("#timer-resume-btn").toggleClass("d-none");
-      $("#timer-reset-btn").toggleClass("d-none");
-      timerActive = false;
-   } else if (targetElementId === "timer-resume-btn") {
-      $("#timer-resume-btn").toggleClass("d-none");
-      $("#timer-stop-btn").toggleClass("d-none");
-      $("#timer-reset-btn").toggleClass("d-none");
-      timerActive = true;
-   } else if (targetElementId === "timer-reset-btn") {
-      $("#timer-reset-btn").toggleClass("d-none");
-      $("#timer-start-btn").toggleClass("d-none");
-      $("#timer-resume-btn").toggleClass("d-none");
-      timer = 0;
-      updateTimer();
+
+   // player list items
+   var targetElement = $(event.target).closest("li[data-status='0']");
+   if (targetElement != undefined) {
+      var clickedName = targetElement.find(".player-name").text();
+      var clickedLocation = parseInt(targetElement.attr("data-location"));
+      var nextLocation = clickedLocation + 1;
+      // update the element
+      targetElement.attr("data-status", "1");
+      targetElement.attr("data-time", timer);
+      $(event.target)
+         .closest("li")
+         .append(
+            $("<span class='player-time'>" + formatTime(timer) + "</span>")
+         );
+      // check if more progress is available
+      if ($(".card").length >= nextLocation) {
+         appendPlayer(nextLocation, {
+            name: clickedName,
+            time: 0,
+            status: 0,
+         });
+      }
+      saveLocalStorage();
    }
-   saveLocalStorage();
 });
 
 // auto fit timer text size
