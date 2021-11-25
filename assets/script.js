@@ -1,6 +1,10 @@
 // timer
 var timer = 0;
 var timerActive = false;
+// for context menu
+var rightClickedLocation = 0;
+// track which element triggered the modal
+var modalTrigger = "";
 
 // create new location card and apply new ID number and data-location number
 function newLocation(locationName, locationInfo, locationPlayers) {
@@ -132,10 +136,10 @@ function updateTimer() {
 $("#location-form").on("submit", function (event) {
    event.preventDefault();
    var newLocationName = $("#location-name-input").val().trim();
-   var newLocationInfo = $("#location-info-input").val().trim();
+   var newLocationInfo = $("#location-info-textarea").val().trim();
    if (newLocationName.length > 0 && newLocationInfo.length > 0) {
       $("#location-name-input").val("");
-      $("#location-info-input").val("");
+      $("#location-info-textarea").val("");
       newLocation(newLocationName, newLocationInfo);
    }
    $("#location-name-input").trigger("focus");
@@ -173,7 +177,7 @@ $("#modal-form").on("submit", function (event) {
    event.preventDefault();
 });
 
-// player name list item mouseover listener
+// player name list item mouseover listener. used for player name highlighting
 // modified from https://stackoverflow.com/a/9827114
 $("#cards-container").on(
    {
@@ -194,6 +198,11 @@ $("#cards-container").on(
 // location name context menu
 $("#cards-container").on("contextmenu", "button", function (event) {
    event.preventDefault();
+   // get id number of right clicked location. used for context menu actions
+   rightClickedLocation = $(event.target)
+      .closest("*[data-location]")
+      .attr("data-location");
+   // hide other context menu
    $("#player-context-menu").addClass("d-none");
    // check if context menu is already open
    if ($("#location-context-menu").hasClass("d-none")) {
@@ -208,6 +217,11 @@ $("#cards-container").on("contextmenu", "button", function (event) {
 // player name list item context menu
 $("#cards-container").on("contextmenu", "li", function (event) {
    event.preventDefault();
+   // get id number of right clicked location. used for context menu actions
+   rightClickedLocation = $(event.target)
+      .closest("*[data-location]")
+      .attr("data-location");
+   // hide other context menu
    $("#location-context-menu").addClass("d-none");
    // check if context menu is already open
    if ($("#player-context-menu").hasClass("d-none")) {
@@ -229,6 +243,7 @@ $("*").on("click", function () {
 $("body").on("click", function (event) {
    // buttons
    var targetElementId = $(event.target).closest("button").attr("id");
+   console.log($(targetElementId).closest(""));
    if (targetElementId != undefined) {
       // timer buttons
       if (targetElementId === "timer-start-btn") {
@@ -254,21 +269,33 @@ $("body").on("click", function (event) {
       }
       // delete buttons
       else if (targetElementId === "delete-players-btn") {
-         $("li").remove();
-         location.reload();
+         modalTrigger = targetElementId;
+         $("#delete-modal-text").text("Delete all players?");
       } else if (targetElementId === "delete-everything-btn") {
-         $(".card[id]").remove();
-         location.reload();
+         modalTrigger = targetElementId;
+         $("#delete-modal-text").text("Delete everything?");
       }
       // context menu buttons
-      else if (targetElementId === "edit-location-name-btn") {
-      } else if (targetElementId === "edit-location-info-btn") {
+      else if (targetElementId === "edit-location-btn") {
+         editMode = "location";
       } else if (targetElementId === "delete-location-btn") {
-      } else if (targetElementId === "edit-player-name-btn") {
+      } else if (targetElementId === "edit-player-btn") {
+         editMode = "player";
       } else if (targetElementId === "undo-progress-btn") {
       } else if (targetElementId === "delete-player-btn") {
       }
+      // modal buttons
+      else if (targetElementId === "modal-delete-btn") {
+         if (modalTrigger === "delete-players-btn") {
+            $("li").remove();
+            location.reload();
+         } else if (modalTrigger === "delete-everything-btn") {
+            $(".card[id]").remove();
+            location.reload();
+         }
+      }
       saveLocalStorage();
+      console.log(modalTrigger);
    }
 
    // player list items

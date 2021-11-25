@@ -38,14 +38,20 @@
             <h1 class="flex-grow-1">Scavenger Hunt Tracker</h1>
             <div id="delete-buttons">
                <button
+                  type="button"
                   class="btn btn-danger flex-fill me-2"
                   id="delete-players-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#delete-modal"
                >
                   <i class="fas fa-trash-alt"></i> Players
                </button>
                <button
+                  type="button"
                   class="btn btn-danger flex-fill ms-1"
                   id="delete-everything-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#delete-modal"
                >
                   <i class="fas fa-trash-alt"></i> Everything
                </button>
@@ -76,10 +82,10 @@
                      <div class="form-floating mb-2">
                         <textarea
                            class="form-control"
-                           id="location-info-input"
+                           id="location-info-textarea"
                            style="height: 100px"
                         ></textarea>
-                        <label for="location-info-input"
+                        <label for="location-info-textarea"
                            >Information and hint</label
                         >
                      </div>
@@ -111,24 +117,28 @@
                   <div id="timer-text">00:00</div>
                   <div id="timer-buttons" class="d-flex">
                      <button
+                        type="button"
                         id="timer-start-btn"
                         class="btn btn-success flex-fill"
                      >
                         <i class="fas fa-play"></i> Start
                      </button>
                      <button
+                        type="button"
                         id="timer-resume-btn"
                         class="d-none btn btn-success flex-fill me-2"
                      >
                         <i class="fas fa-play"></i> Resume
                      </button>
                      <button
+                        type="button"
                         id="timer-stop-btn"
                         class="d-none btn btn-danger flex-fill"
                      >
                         <i class="fas fa-stop"></i> Stop
                      </button>
                      <button
+                        type="button"
                         id="timer-reset-btn"
                         class="d-none btn btn-danger flex-fill"
                      >
@@ -194,20 +204,12 @@
                <button
                   type="button"
                   class="list-group-item text-start hover-info"
-                  id="edit-location-name-btn"
+                  id="edit-location-btn"
                   data-bs-toggle="modal"
-                  data-bs-target="#name-modal"
+                  data-bs-target="#edit-modal"
                >
                   <i class="fas fa-edit"></i>
-                  Edit name
-               </button>
-               <button
-                  type="button"
-                  class="list-group-item text-start hover-info"
-                  id="edit-location-info-btn"
-               >
-                  <i class="fas fa-edit"></i>
-                  Edit info
+                  Edit location
                </button>
                <div class="list-group-item"><hr /></div>
                <button
@@ -230,7 +232,9 @@
                <button
                   type="button"
                   class="list-group-item text-start hover-info"
-                  id="edit-player-name-btn"
+                  id="edit-player-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#edit-modal"
                >
                   <i class="fas fa-edit"></i>
                   Edit name
@@ -248,6 +252,8 @@
                   type="button"
                   class="list-group-item text-start hover-danger"
                   id="delete-player-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#delete-modal"
                >
                   <i class="fas fa-trash-alt"></i>
                   Delete
@@ -255,13 +261,16 @@
             </div>
          </div>
          <!-- context menu end -->
-         <!-- modal -->
-         <div class="modal fade" id="name-modal" tabindex="-1">
+         <!-- edit modal -->
+         <div class="modal fade" id="edit-modal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                <div class="modal-content">
                   <form id="modal-form">
                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+                        <h5 class="modal-title" id="edit-modal-title">
+                           <i class="fas fa-edit"></i>
+                           Edit
+                        </h5>
                         <button
                            type="button"
                            class="btn-close"
@@ -272,6 +281,14 @@
                         <div class="form-floating">
                            <input class="form-control mb-2" id="modal-input" />
                            <label for="modal-input">Enter new name</label>
+                        </div>
+                        <div class="form-floating">
+                           <textarea
+                              class="form-control mb-2"
+                              id="modal-textarea"
+                              style="height: 200px"
+                           ></textarea>
+                           <label for="modal-textarea">Enter new info</label>
                         </div>
                      </div>
                      <div class="modal-footer">
@@ -291,6 +308,43 @@
                         </button>
                      </div>
                   </form>
+               </div>
+            </div>
+         </div>
+         <!-- modal end -->
+         <!-- delete modal -->
+         <div class="modal fade" id="delete-modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="delete-modal-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Are you sure?
+                     </h5>
+                     <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                     ></button>
+                  </div>
+                  <div class="modal-body" id="delete-modal-text"></div>
+                  <div class="modal-footer">
+                     <button
+                        type="button"
+                        class="btn btn-danger"
+                        data-bs-dismiss="modal"
+                        id="modal-delete-btn"
+                     >
+                        Yes, delete
+                     </button>
+                     <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                     >
+                        No, cancel
+                     </button>
+                  </div>
                </div>
             </div>
          </div>
