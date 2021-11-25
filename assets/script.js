@@ -3,6 +3,7 @@ var timer = 0;
 var timerActive = false;
 // for context menu
 var rightClickedLocation = 0;
+var rightClickedName = "";
 // track which element triggered the modal
 var modalTrigger = "";
 
@@ -35,15 +36,10 @@ function newLocation(locationName, locationInfo, locationPlayers) {
 
 // append player list item
 function appendPlayer(locationId, playerObj) {
-   // create unique ID from name using character codes. used for string sanitization
-   var newUID = "";
-   for (let i = 0; i < playerObj.name.length; i++) {
-      newUID += playerObj.name.charCodeAt(i);
-   }
    // create new element with appropriate attributes
    var newListElement = $(
       '<li class="list-group-item" data-uid="' +
-         newUID +
+         createUID(playerObj.name) +
          '" data-status="' +
          playerObj.status +
          '" data-location="' +
@@ -83,8 +79,17 @@ function loadLocalStorage() {
    }
 }
 
+// create unique ID from name using character codes. used for string sanitization
+function createUID(str) {
+   var newUID = "";
+   for (let i = 0; i < str.length; i++) {
+      newUID += str.charCodeAt(i);
+   }
+   return newUID;
+}
+
 // save localstorage
-function saveLocalStorage() {
+function saveLocalStorage(source) {
    var dataToSave = [];
    // loop through all the cards to get the data
    // remember to ignore the hidden dummy card
@@ -108,7 +113,7 @@ function saveLocalStorage() {
          players: playersList,
       });
    });
-   console.log(dataToSave);
+   console.log(dataToSave, source);
    localStorage.setItem("locations", JSON.stringify(dataToSave));
    localStorage.setItem("timer", JSON.stringify(timer));
 }
@@ -166,7 +171,7 @@ $("#player-form").on("submit", function (event) {
          time: 0,
          status: 0,
       });
-      saveLocalStorage();
+      saveLocalStorage("add player submit listener");
    }
    $("#player-name-input").val("");
    $("#player-name-input").trigger("focus");
@@ -202,6 +207,8 @@ $("#cards-container").on("contextmenu", "button", function (event) {
    rightClickedLocation = $(event.target)
       .closest("*[data-location]")
       .attr("data-location");
+   // get location name at right clicked location. used for context menu actions
+   rightClickedName = $(event.target).closest("button").text();
    // hide other context menu
    $("#player-context-menu").addClass("d-none");
    // check if context menu is already open
@@ -221,6 +228,9 @@ $("#cards-container").on("contextmenu", "li", function (event) {
    rightClickedLocation = $(event.target)
       .closest("*[data-location]")
       .attr("data-location");
+   // get player name at right clicked location. used for context menu actions
+   // travels up the DOM tree then searches back down, because why not
+   rightClickedName = $(event.target).closest("li").find(".player-name").text();
    // hide other context menu
    $("#location-context-menu").addClass("d-none");
    // check if context menu is already open
@@ -239,89 +249,88 @@ $("*").on("click", function () {
    $("#player-context-menu").addClass("d-none");
 });
 
-// click listener
-$("body").on("click", function (event) {
-   // buttons
+// button click listener
+$("body").on("click", "button", function (event) {
    var targetElementId = $(event.target).closest("button").attr("id");
-   console.log($(targetElementId).closest(""));
-   if (targetElementId != undefined) {
-      // timer buttons
-      if (targetElementId === "timer-start-btn") {
-         $("#timer-start-btn").toggleClass("d-none");
-         $("#timer-stop-btn").toggleClass("d-none");
-         timerActive = true;
-      } else if (targetElementId === "timer-stop-btn") {
-         $("#timer-stop-btn").toggleClass("d-none");
-         $("#timer-resume-btn").toggleClass("d-none");
-         $("#timer-reset-btn").toggleClass("d-none");
-         timerActive = false;
-      } else if (targetElementId === "timer-resume-btn") {
-         $("#timer-resume-btn").toggleClass("d-none");
-         $("#timer-stop-btn").toggleClass("d-none");
-         $("#timer-reset-btn").toggleClass("d-none");
-         timerActive = true;
-      } else if (targetElementId === "timer-reset-btn") {
-         $("#timer-reset-btn").toggleClass("d-none");
-         $("#timer-start-btn").toggleClass("d-none");
-         $("#timer-resume-btn").toggleClass("d-none");
-         timer = 0;
-         updateTimer();
-      }
-      // delete buttons
-      else if (targetElementId === "delete-players-btn") {
-         modalTrigger = targetElementId;
-         $("#delete-modal-text").text("Delete all players?");
-      } else if (targetElementId === "delete-everything-btn") {
-         modalTrigger = targetElementId;
-         $("#delete-modal-text").text("Delete everything?");
-      }
-      // context menu buttons
-      else if (targetElementId === "edit-location-btn") {
-         editMode = "location";
-      } else if (targetElementId === "delete-location-btn") {
-      } else if (targetElementId === "edit-player-btn") {
-         editMode = "player";
-      } else if (targetElementId === "undo-progress-btn") {
-      } else if (targetElementId === "delete-player-btn") {
-      }
-      // modal buttons
-      else if (targetElementId === "modal-delete-btn") {
-         if (modalTrigger === "delete-players-btn") {
-            $("li").remove();
-            location.reload();
-         } else if (modalTrigger === "delete-everything-btn") {
-            $(".card[id]").remove();
-            location.reload();
-         }
-      }
-      saveLocalStorage();
-      console.log(modalTrigger);
+   // timer buttons
+   if (targetElementId === "timer-start-btn") {
+      $("#timer-start-btn").toggleClass("d-none");
+      $("#timer-stop-btn").toggleClass("d-none");
+      timerActive = true;
+   } else if (targetElementId === "timer-stop-btn") {
+      $("#timer-stop-btn").toggleClass("d-none");
+      $("#timer-resume-btn").toggleClass("d-none");
+      $("#timer-reset-btn").toggleClass("d-none");
+      timerActive = false;
+   } else if (targetElementId === "timer-resume-btn") {
+      $("#timer-resume-btn").toggleClass("d-none");
+      $("#timer-stop-btn").toggleClass("d-none");
+      $("#timer-reset-btn").toggleClass("d-none");
+      timerActive = true;
+   } else if (targetElementId === "timer-reset-btn") {
+      $("#timer-reset-btn").toggleClass("d-none");
+      $("#timer-start-btn").toggleClass("d-none");
+      $("#timer-resume-btn").toggleClass("d-none");
+      timer = 0;
+      updateTimer();
    }
+   // delete buttons
+   else if (targetElementId === "delete-players-btn") {
+      modalTrigger = targetElementId;
+      $("#delete-modal-text").text("Delete all players?");
+   } else if (targetElementId === "delete-everything-btn") {
+      modalTrigger = targetElementId;
+      $("#delete-modal-text").text("Delete everything?");
+   }
+   // context menu buttons
+   else if (targetElementId === "edit-location-btn") {
+      modalTrigger = targetElementId;
+   } else if (targetElementId === "delete-location-btn") {
+      modalTrigger = targetElementId;
+      $("#delete-modal-text").text(
+         "Delete location '" + rightClickedName + "'?"
+      );
+   } else if (targetElementId === "edit-player-btn") {
+      modalTrigger = targetElementId;
+   } else if (targetElementId === "undo-progress-btn") {
+   } else if (targetElementId === "delete-player-btn") {
+      modalTrigger = targetElementId;
+      $("#delete-modal-text").text("Delete player '" + rightClickedName + "'?");
+   }
+   // modal buttons
+   else if (targetElementId === "modal-delete-btn") {
+      if (modalTrigger === "delete-players-btn") {
+         $("li").remove();
+      } else if (modalTrigger === "delete-everything-btn") {
+         $(".card[id]").remove();
+      } else if (modalTrigger === "delete-player-btn") {
+         $("li[data-uid='" + createUID(rightClickedName) + "']").remove();
+      }
+   }
+   saveLocalStorage("button click listener");
+});
 
-   // player list items
-   var targetElement = $(event.target).closest("li[data-status='0']");
-   if (targetElement != undefined) {
-      var clickedName = targetElement.find(".player-name").text();
-      var clickedLocation = parseInt(targetElement.attr("data-location"));
-      var nextLocation = clickedLocation + 1;
-      // update the element
-      targetElement.attr("data-status", "1");
-      targetElement.attr("data-time", timer);
-      $(event.target)
-         .closest("li")
-         .append(
-            $("<span class='player-time'>" + formatTime(timer) + "</span>")
-         );
-      // check if more progress is available
-      if ($(".card").length >= nextLocation) {
-         appendPlayer(nextLocation, {
-            name: clickedName,
-            time: 0,
-            status: 0,
-         });
-      }
-      saveLocalStorage();
+// player list item click listener
+$("#cards-container").on("click", "li[data-status='0']", function (event) {
+   var targetElement = $(event.target).closest("li");
+   var clickedName = targetElement.find(".player-name").text();
+   var clickedLocation = parseInt(targetElement.attr("data-location"));
+   var nextLocation = clickedLocation + 1;
+   // update the element
+   targetElement.attr("data-status", "1");
+   targetElement.attr("data-time", timer);
+   targetElement
+      .closest("li")
+      .append($("<span class='player-time'>" + formatTime(timer) + "</span>"));
+   // check if more progress is available
+   if ($(".card").length >= nextLocation) {
+      appendPlayer(nextLocation, {
+         name: clickedName,
+         time: 0,
+         status: 0,
+      });
    }
+   saveLocalStorage("player list item click listener");
 });
 
 // auto fit timer text size
