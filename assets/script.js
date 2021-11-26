@@ -39,7 +39,7 @@ function appendPlayer(locationId, playerObj) {
    // create new element with appropriate attributes
    var newListElement = $(
       '<li class="list-group-item" data-uid="' +
-         createUID(playerObj.name) +
+         uid(playerObj.name) +
          '" data-status="' +
          playerObj.status +
          '" data-location="' +
@@ -80,7 +80,7 @@ function loadLocalStorage() {
 }
 
 // create unique ID from name using character codes. used for string sanitization
-function createUID(str) {
+function uid(str) {
    var newUID = "";
    for (let i = 0; i < str.length; i++) {
       newUID += str.charCodeAt(i);
@@ -282,7 +282,7 @@ $("body").on("click", "button", function (event) {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text("Delete everything?");
    }
-   // context menu buttons
+   // context menu buttons (locations)
    else if (targetElementId === "edit-location-btn") {
       modalTrigger = targetElementId;
    } else if (targetElementId === "delete-location-btn") {
@@ -290,9 +290,29 @@ $("body").on("click", "button", function (event) {
       $("#delete-modal-text").text(
          "Delete location '" + rightClickedName + "'?"
       );
-   } else if (targetElementId === "edit-player-btn") {
+   }
+   // context menu buttons (players)
+   else if (targetElementId === "edit-player-btn") {
       modalTrigger = targetElementId;
    } else if (targetElementId === "undo-progress-btn") {
+      if ($("li[data-uid='" + uid(rightClickedName) + "']").length > 1) {
+         // delete last occurence of player item
+         $("li[data-uid='" + uid(rightClickedName) + "']")
+            .last()
+            .remove();
+         // remove progress status from previous item
+         $("li[data-uid='" + uid(rightClickedName) + "']")
+            .last()
+            .attr("data-status", "0");
+         $("li[data-uid='" + uid(rightClickedName) + "']")
+            .last()
+            .removeAttr("data-time");
+         $("li[data-uid='" + uid(rightClickedName) + "']")
+            .last()
+            .find("span")
+            .last()
+            .remove();
+      }
    } else if (targetElementId === "delete-player-btn") {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text("Delete player '" + rightClickedName + "'?");
@@ -304,7 +324,7 @@ $("body").on("click", "button", function (event) {
       } else if (modalTrigger === "delete-everything-btn") {
          $(".card[id]").remove();
       } else if (modalTrigger === "delete-player-btn") {
-         $("li[data-uid='" + createUID(rightClickedName) + "']").remove();
+         $("li[data-uid='" + uid(rightClickedName) + "']").remove();
       }
    }
    saveLocalStorage("button click listener");
