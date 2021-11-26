@@ -280,17 +280,19 @@
                         ></button>
                      </div>
                      <div class="modal-body">
-                        <div class="form-floating">
+                        <div class="form-floating" id="modal-input-form">
                            <input class="form-control mb-2" id="modal-input" />
-                           <label for="modal-input">Enter new name</label>
+                           <label for="modal-input">Name</label>
                         </div>
-                        <div class="form-floating">
+                        <div class="form-floating" id="modal-textarea-form">
                            <textarea
                               class="form-control mb-2"
                               id="modal-textarea"
                               style="height: 200px"
                            ></textarea>
-                           <label for="modal-textarea">Enter new info</label>
+                           <label for="modal-textarea"
+                              >Information and hint</label
+                           >
                         </div>
                      </div>
                      <div class="modal-footer">
@@ -305,6 +307,7 @@
                            type="submit"
                            class="btn btn-primary"
                            data-bs-dismiss="modal"
+                           id="modal-save-button"
                         >
                            Save changes
                         </button>
@@ -345,6 +348,36 @@
                         data-bs-dismiss="modal"
                      >
                         No, cancel
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- modal end -->
+         <!-- alert modal -->
+         <div class="modal fade" id="alert-modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Error
+                     </h5>
+                     <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                     ></button>
+                  </div>
+                  <div class="modal-body" id="alert-modal-text"></div>
+                  <div class="modal-footer">
+                     <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-dismiss="modal"
+                        id="modal-okay-btn"
+                     >
+                        Okay
                      </button>
                   </div>
                </div>

@@ -294,13 +294,15 @@ $("body").on("click", "button", function (event) {
    // context menu buttons (players)
    else if (targetElementId === "edit-player-btn") {
       modalTrigger = targetElementId;
+      $("#modal-input").val(rightClickedName);
+      $("#modal-textarea-form").addClass("d-none");
    } else if (targetElementId === "undo-progress-btn") {
       if ($("li[data-uid='" + uid(rightClickedName) + "']").length > 1) {
          // delete last occurence of player item
          $("li[data-uid='" + uid(rightClickedName) + "']")
             .last()
             .remove();
-         // remove progress status from previous item
+         // remove progress status from next last item
          $("li[data-uid='" + uid(rightClickedName) + "']")
             .last()
             .attr("data-status", "0");
@@ -318,6 +320,7 @@ $("body").on("click", "button", function (event) {
       $("#delete-modal-text").text("Delete player '" + rightClickedName + "'?");
    }
    // modal buttons
+   // delete confirmation modal
    else if (targetElementId === "modal-delete-btn") {
       if (modalTrigger === "delete-players-btn") {
          $("li").remove();
@@ -326,6 +329,46 @@ $("body").on("click", "button", function (event) {
       } else if (modalTrigger === "delete-player-btn") {
          $("li[data-uid='" + uid(rightClickedName) + "']").remove();
       }
+   }
+   // edit modal
+   else if (targetElementId === "modal-save-button") {
+      if (modalTrigger === "edit-player-btn") {
+         var newName = $("#modal-input").val().trim();
+         // input validation
+         // if empty string
+         if (newName.length < 1) {
+            $("#edit-modal").modal("hide");
+            $("#alert-modal").modal("show");
+            $("#alert-modal-text").text("Player name cannot be empty.");
+         }
+         // if no change
+         else if (newName === rightClickedName) {
+            return;
+         }
+         // if already exists
+         else if ($("li[data-uid='" + uid(newName) + "']").length) {
+            $("#edit-modal").modal("hide");
+            $("#alert-modal").modal("show");
+            $("#alert-modal-text").text("Player name already exists.");
+         }
+         // else no errors found
+         else {
+            // only modify the first span element (the one containing the name, not the time)
+            $("li[data-uid='" + uid(rightClickedName) + "']")
+               .find("span:first")
+               .text(newName);
+            // modify the uid to new one
+            $("li[data-uid='" + uid(rightClickedName) + "']").attr(
+               "data-uid",
+               uid(newName)
+            );
+         }
+      }
+   }
+   // alert modal
+   else if (targetElementId === "modal-okay-btn") {
+      $("#alert-modal").modal("hide");
+      $("#edit-modal").modal("show");
    }
    saveLocalStorage("button click listener");
 });
