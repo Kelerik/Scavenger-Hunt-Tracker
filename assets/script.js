@@ -1,6 +1,5 @@
 // timer
-var timer = 0;
-var timerActive = false;
+var timerObj = { time: 0, active: false };
 // for context menu
 var rightClickedLocation = 0;
 var rightClickedName = "";
@@ -74,8 +73,13 @@ function loadLocalStorage() {
    // load timer data
    var loadedTimer = JSON.parse(localStorage.getItem("timer"));
    if (loadedTimer != undefined) {
-      timer = loadedTimer;
+      timerObj.time = loadedTimer.time;
+      timerObj.active = loadedTimer.active;
       updateTimer();
+      // auto click start button if timer is active
+      if (timerObj.active === true) {
+         $("#timer-start-btn").trigger("click");
+      }
    }
 }
 
@@ -115,7 +119,7 @@ function saveLocalStorage(source) {
    });
    console.log(dataToSave, source);
    localStorage.setItem("locations", JSON.stringify(dataToSave));
-   localStorage.setItem("timer", JSON.stringify(timer));
+   localStorage.setItem("timer", JSON.stringify(timerObj));
 }
 
 // format seconds to mm:ss
@@ -134,7 +138,7 @@ function formatTime(timeInSeconds) {
 
 // update the timer display
 function updateTimer() {
-   $("#timer-text").text(formatTime(timer));
+   $("#timer-text").text(formatTime(timerObj.time));
 }
 
 // add location submit listener
@@ -171,7 +175,7 @@ $("#player-form").on("submit", function (event) {
          time: 0,
          status: 0,
       });
-      saveLocalStorage("add player submit listener");
+      saveLocalStorage("add player: " + newPlayerName);
    }
    $("#player-name-input").val("");
    $("#player-name-input").focus();
@@ -252,48 +256,45 @@ $("*").on("click", function () {
 // button click listener
 $("body").on("click", "button", function (event) {
    var targetElementId = $(event.target).closest("button").attr("id");
-   // timer buttons
-   // - start
+   // timer - start
    if (targetElementId === "timer-start-btn") {
       $("#timer-start-btn").toggleClass("d-none");
       $("#timer-stop-btn").toggleClass("d-none");
-      timerActive = true;
+      timerObj.active = true;
    }
-   // - stop
+   // timer - stop
    else if (targetElementId === "timer-stop-btn") {
       $("#timer-stop-btn").toggleClass("d-none");
       $("#timer-resume-btn").toggleClass("d-none");
       $("#timer-reset-btn").toggleClass("d-none");
-      timerActive = false;
+      timerObj.active = false;
    }
-   // - resume
+   // timer - resume
    else if (targetElementId === "timer-resume-btn") {
       $("#timer-resume-btn").toggleClass("d-none");
       $("#timer-stop-btn").toggleClass("d-none");
       $("#timer-reset-btn").toggleClass("d-none");
-      timerActive = true;
+      timerObj.active = true;
    }
-   // - reset
+   // timer - reset
    else if (targetElementId === "timer-reset-btn") {
       $("#timer-reset-btn").toggleClass("d-none");
       $("#timer-start-btn").toggleClass("d-none");
       $("#timer-resume-btn").toggleClass("d-none");
-      timer = 0;
+      timerObj.time = 0;
       updateTimer();
    }
-   // delete buttons
-   // - players
+   // delete - players
    else if (targetElementId === "delete-players-btn") {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text("Delete all players?");
    }
-   // - everything
+   // delete - everything
    else if (targetElementId === "delete-everything-btn") {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text("Delete everything?");
    }
-   // context menu buttons
-   // - edit location
+   // context menu - edit location
    else if (targetElementId === "edit-location-btn") {
       modalTrigger = targetElementId;
       $("#modal-input").val(rightClickedName);
@@ -304,20 +305,20 @@ $("body").on("click", "button", function (event) {
             .text()
       );
    }
-   // - delete location
+   // context menu - delete location
    else if (targetElementId === "delete-location-btn") {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text(
          "Delete location '" + rightClickedName + "'?"
       );
    }
-   // - edit player
+   // context menu - edit player
    else if (targetElementId === "edit-player-btn") {
       modalTrigger = targetElementId;
       $("#modal-input").val(rightClickedName);
       $("#modal-textarea-form").addClass("d-none");
    }
-   // - undo progress
+   // context menu - undo progress
    else if (targetElementId === "undo-progress-btn") {
       if ($("li[data-uid='" + uid(rightClickedName) + "']").length > 1) {
          // delete last occurence of player item
@@ -338,27 +339,37 @@ $("body").on("click", "button", function (event) {
             .remove();
       }
    }
-   // - delete player
+   // context menu - delete player
    else if (targetElementId === "delete-player-btn") {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text("Delete player '" + rightClickedName + "'?");
    }
-   // modal buttons
-   // - delete confirmation modal
+   // modal - delete confirmation
    else if (targetElementId === "modal-delete-btn") {
+      // delete all players
       if (modalTrigger === "delete-players-btn") {
          $("li").remove();
-      } else if (modalTrigger === "delete-everything-btn") {
+      }
+      // delete everything
+      else if (modalTrigger === "delete-everything-btn") {
          $(".card[id]").remove();
-      } else if (modalTrigger === "delete-player-btn") {
+      }
+      // delete location
+      else if (modalTrigger === "delete-location-btn") {
+         $("#card-" + rightClickedLocation).remove();
+         // reloading page is easier way to fix the remaining locations
+         location.reload();
+      }
+      // delete player
+      else if (modalTrigger === "delete-player-btn") {
          $("li[data-uid='" + uid(rightClickedName) + "']").remove();
       }
    }
-   // - edit modal
+   // modal - save changes
    else if (targetElementId === "modal-save-button") {
       var newName = $("#modal-input").val().trim();
       var newLocationInfo = $("#modal-textarea").val().trim();
-      // - edit location
+      // save changes - edit location
       if (modalTrigger === "edit-location-btn") {
          // input validation
          // if empty name
@@ -397,7 +408,7 @@ $("body").on("click", "button", function (event) {
                .text(newLocationInfo);
          }
       }
-      // - edit player
+      // save changes - edit player
       else if (modalTrigger === "edit-player-btn") {
          // input validation
          // if empty string
@@ -430,16 +441,16 @@ $("body").on("click", "button", function (event) {
          }
       }
    }
-   // alert modal
+   // modal - error okay
    else if (targetElementId === "modal-okay-btn") {
       $("#alert-modal").modal("hide");
       $("#edit-modal").modal("show");
    }
-   saveLocalStorage("button click listener");
+   saveLocalStorage(targetElementId);
 });
 
 // modal input autofocus
-$("#modal-form").on("shown.bs.modal", function () {
+$("#edit-modal").on("shown.bs.modal", function () {
    $("#modal-input").focus();
 });
 
@@ -451,10 +462,12 @@ $("#cards-container").on("click", "li[data-status='0']", function (event) {
    var nextLocation = clickedLocation + 1;
    // update the element
    targetElement.attr("data-status", "1");
-   targetElement.attr("data-time", timer);
+   targetElement.attr("data-time", timerObj.time);
    targetElement
       .closest("li")
-      .append($("<span class='player-time'>" + formatTime(timer) + "</span>"));
+      .append(
+         $("<span class='player-time'>" + formatTime(timerObj.time) + "</span>")
+      );
    // check if more progress is available
    if ($(".card").length >= nextLocation) {
       appendPlayer(nextLocation, {
@@ -463,7 +476,7 @@ $("#cards-container").on("click", "li[data-status='0']", function (event) {
          status: 0,
       });
    }
-   saveLocalStorage("player list item click listener");
+   saveLocalStorage("progress: " + clickedName);
 });
 
 // auto fit timer text size
@@ -471,9 +484,12 @@ $("#timer-text").fitText(0.35);
 
 // timer
 setInterval(function () {
-   if (timerActive) {
-      timer++;
+   if (timerObj.active) {
+      timerObj.time++;
       updateTimer();
+      if (timerObj.time % 15 === 0) {
+         saveLocalStorage("autosave");
+      }
    }
 }, 1000);
 
