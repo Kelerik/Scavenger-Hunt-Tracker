@@ -147,7 +147,7 @@ $("#location-form").on("submit", function (event) {
       $("#location-info-textarea").val("");
       newLocation(newLocationName, newLocationInfo);
    }
-   $("#location-name-input").trigger("focus");
+   $("#location-name-input").focus();
 });
 
 // add player submit listener
@@ -174,7 +174,7 @@ $("#player-form").on("submit", function (event) {
       saveLocalStorage("add player submit listener");
    }
    $("#player-name-input").val("");
-   $("#player-name-input").trigger("focus");
+   $("#player-name-input").focus();
 });
 
 // edit modal submit listener
@@ -253,21 +253,28 @@ $("*").on("click", function () {
 $("body").on("click", "button", function (event) {
    var targetElementId = $(event.target).closest("button").attr("id");
    // timer buttons
+   // - start
    if (targetElementId === "timer-start-btn") {
       $("#timer-start-btn").toggleClass("d-none");
       $("#timer-stop-btn").toggleClass("d-none");
       timerActive = true;
-   } else if (targetElementId === "timer-stop-btn") {
+   }
+   // - stop
+   else if (targetElementId === "timer-stop-btn") {
       $("#timer-stop-btn").toggleClass("d-none");
       $("#timer-resume-btn").toggleClass("d-none");
       $("#timer-reset-btn").toggleClass("d-none");
       timerActive = false;
-   } else if (targetElementId === "timer-resume-btn") {
+   }
+   // - resume
+   else if (targetElementId === "timer-resume-btn") {
       $("#timer-resume-btn").toggleClass("d-none");
       $("#timer-stop-btn").toggleClass("d-none");
       $("#timer-reset-btn").toggleClass("d-none");
       timerActive = true;
-   } else if (targetElementId === "timer-reset-btn") {
+   }
+   // - reset
+   else if (targetElementId === "timer-reset-btn") {
       $("#timer-reset-btn").toggleClass("d-none");
       $("#timer-start-btn").toggleClass("d-none");
       $("#timer-resume-btn").toggleClass("d-none");
@@ -275,28 +282,43 @@ $("body").on("click", "button", function (event) {
       updateTimer();
    }
    // delete buttons
+   // - players
    else if (targetElementId === "delete-players-btn") {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text("Delete all players?");
-   } else if (targetElementId === "delete-everything-btn") {
+   }
+   // - everything
+   else if (targetElementId === "delete-everything-btn") {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text("Delete everything?");
    }
-   // context menu buttons (locations)
+   // context menu buttons
+   // - edit location
    else if (targetElementId === "edit-location-btn") {
       modalTrigger = targetElementId;
-   } else if (targetElementId === "delete-location-btn") {
+      $("#modal-input").val(rightClickedName);
+      $("#modal-textarea-form").removeClass("d-none");
+      $("#modal-textarea").val(
+         $("#card-" + rightClickedLocation)
+            .find(".accordion-body")
+            .text()
+      );
+   }
+   // - delete location
+   else if (targetElementId === "delete-location-btn") {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text(
          "Delete location '" + rightClickedName + "'?"
       );
    }
-   // context menu buttons (players)
+   // - edit player
    else if (targetElementId === "edit-player-btn") {
       modalTrigger = targetElementId;
       $("#modal-input").val(rightClickedName);
       $("#modal-textarea-form").addClass("d-none");
-   } else if (targetElementId === "undo-progress-btn") {
+   }
+   // - undo progress
+   else if (targetElementId === "undo-progress-btn") {
       if ($("li[data-uid='" + uid(rightClickedName) + "']").length > 1) {
          // delete last occurence of player item
          $("li[data-uid='" + uid(rightClickedName) + "']")
@@ -315,12 +337,14 @@ $("body").on("click", "button", function (event) {
             .last()
             .remove();
       }
-   } else if (targetElementId === "delete-player-btn") {
+   }
+   // - delete player
+   else if (targetElementId === "delete-player-btn") {
       modalTrigger = targetElementId;
       $("#delete-modal-text").text("Delete player '" + rightClickedName + "'?");
    }
    // modal buttons
-   // delete confirmation modal
+   // - delete confirmation modal
    else if (targetElementId === "modal-delete-btn") {
       if (modalTrigger === "delete-players-btn") {
          $("li").remove();
@@ -330,10 +354,51 @@ $("body").on("click", "button", function (event) {
          $("li[data-uid='" + uid(rightClickedName) + "']").remove();
       }
    }
-   // edit modal
+   // - edit modal
    else if (targetElementId === "modal-save-button") {
-      if (modalTrigger === "edit-player-btn") {
-         var newName = $("#modal-input").val().trim();
+      var newName = $("#modal-input").val().trim();
+      var newLocationInfo = $("#modal-textarea").val().trim();
+      // - edit location
+      if (modalTrigger === "edit-location-btn") {
+         // input validation
+         // if empty name
+         if (newName.length < 1) {
+            $("#edit-modal").modal("hide");
+            $("#alert-modal").modal("show");
+            $("#alert-modal-text").text("Player name cannot be empty.");
+         }
+         // if empty info
+         else if (newLocationInfo.length < 1) {
+            $("#edit-modal").modal("hide");
+            $("#alert-modal").modal("show");
+            $("#alert-modal-text").text(
+               "Information and hint cannot be empty."
+            );
+         }
+         // if no changes
+         else if (
+            newName === rightClickedName &&
+            newLocationInfo ===
+               $("#card-" + rightClickedLocation)
+                  .find(".accordion-body")
+                  .text()
+         ) {
+            return;
+         }
+         // else no errors found
+         else {
+            // modify location name
+            $("#card-" + rightClickedLocation)
+               .find("button")
+               .text(newName);
+            // modify location info
+            $("#card-" + rightClickedLocation)
+               .find(".accordion-body")
+               .text(newLocationInfo);
+         }
+      }
+      // - edit player
+      else if (modalTrigger === "edit-player-btn") {
          // input validation
          // if empty string
          if (newName.length < 1) {
@@ -371,6 +436,11 @@ $("body").on("click", "button", function (event) {
       $("#edit-modal").modal("show");
    }
    saveLocalStorage("button click listener");
+});
+
+// modal input autofocus
+$("#modal-form").on("shown.bs.modal", function () {
+   $("#modal-input").focus();
 });
 
 // player list item click listener
