@@ -284,15 +284,20 @@ $("body").on("click", "button", function (event) {
       timerObj.time = 0;
       updateTimer();
    }
+   // progress - reset
+   else if (targetElementId === "reset-progress-btn") {
+      modalTrigger = targetElementId;
+      $("#confirm-modal-text").text("Reset all progress?");
+   }
    // delete - players
    else if (targetElementId === "delete-players-btn") {
       modalTrigger = targetElementId;
-      $("#delete-modal-text").text("Delete all players?");
+      $("#confirm-modal-text").text("Delete all players?");
    }
    // delete - everything
    else if (targetElementId === "delete-everything-btn") {
       modalTrigger = targetElementId;
-      $("#delete-modal-text").text("Delete everything?");
+      $("#confirm-modal-text").text("Delete everything?");
    }
    // context menu - edit location
    else if (targetElementId === "edit-location-btn") {
@@ -308,7 +313,7 @@ $("body").on("click", "button", function (event) {
    // context menu - delete location
    else if (targetElementId === "delete-location-btn") {
       modalTrigger = targetElementId;
-      $("#delete-modal-text").text(
+      $("#confirm-modal-text").text(
          "Delete location '" + rightClickedName + "'?"
       );
    }
@@ -342,12 +347,22 @@ $("body").on("click", "button", function (event) {
    // context menu - delete player
    else if (targetElementId === "delete-player-btn") {
       modalTrigger = targetElementId;
-      $("#delete-modal-text").text("Delete player '" + rightClickedName + "'?");
+      $("#confirm-modal-text").text(
+         "Delete player '" + rightClickedName + "'?"
+      );
    }
-   // modal - delete confirmation
-   else if (targetElementId === "modal-delete-btn") {
+   // modal - confirmation
+   else if (targetElementId === "modal-confirm-btn") {
+      // reset progress
+      if (modalTrigger === "reset-progress-btn") {
+         $("li[data-location!='0']").remove();
+         $("li").each(function () {
+            $(this).attr("data-status", "0");
+         });
+         $(".player-time").remove();
+      }
       // delete all players
-      if (modalTrigger === "delete-players-btn") {
+      else if (modalTrigger === "delete-players-btn") {
          $("li").remove();
       }
       // delete everything

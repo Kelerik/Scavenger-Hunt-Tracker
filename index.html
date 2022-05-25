@@ -36,22 +36,31 @@
             "
          >
             <h1 class="flex-grow-1">Scavenger Hunt Tracker</h1>
-            <div id="delete-buttons">
+            <div>
+               <button
+                  type="button"
+                  class="btn btn-warning flex-fill me-2"
+                  id="reset-progress-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirm-modal"
+               >
+                  <i class="fas fa-history"></i> Progress
+               </button>
                <button
                   type="button"
                   class="btn btn-danger flex-fill me-2"
                   id="delete-players-btn"
                   data-bs-toggle="modal"
-                  data-bs-target="#delete-modal"
+                  data-bs-target="#confirm-modal"
                >
                   <i class="fas fa-trash-alt"></i> Players
                </button>
                <button
                   type="button"
-                  class="btn btn-danger flex-fill ms-1"
+                  class="btn btn-danger flex-fill me-2"
                   id="delete-everything-btn"
                   data-bs-toggle="modal"
-                  data-bs-target="#delete-modal"
+                  data-bs-target="#confirm-modal"
                >
                   <i class="fas fa-trash-alt"></i> Everything
                </button>
@@ -140,7 +149,7 @@
                      <button
                         type="button"
                         id="timer-reset-btn"
-                        class="d-none btn btn-danger flex-fill"
+                        class="d-none btn btn-warning flex-fill"
                      >
                         <i class="fas fa-history"></i> Reset
                      </button>
@@ -217,7 +226,7 @@
                   class="list-group-item text-start hover-danger"
                   id="delete-location-btn"
                   data-bs-toggle="modal"
-                  data-bs-target="#delete-modal"
+                  data-bs-target="#confirm-modal"
                >
                   <i class="fas fa-trash-alt"></i>
                   Delete
@@ -255,7 +264,7 @@
                   class="list-group-item text-start hover-danger"
                   id="delete-player-btn"
                   data-bs-toggle="modal"
-                  data-bs-target="#delete-modal"
+                  data-bs-target="#confirm-modal"
                >
                   <i class="fas fa-trash-alt"></i>
                   Delete
@@ -317,8 +326,8 @@
             </div>
          </div>
          <!-- modal end -->
-         <!-- delete modal -->
-         <div class="modal fade" id="delete-modal" tabindex="-1">
+         <!-- confirm modal -->
+         <div class="modal fade" id="confirm-modal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                <div class="modal-content">
                   <div class="modal-header">
@@ -332,22 +341,22 @@
                         data-bs-dismiss="modal"
                      ></button>
                   </div>
-                  <div class="modal-body" id="delete-modal-text"></div>
+                  <div class="modal-body" id="confirm-modal-text"></div>
                   <div class="modal-footer">
                      <button
                         type="button"
                         class="btn btn-danger"
                         data-bs-dismiss="modal"
-                        id="modal-delete-btn"
+                        id="modal-confirm-btn"
                      >
-                        Yes, delete
+                        Yes
                      </button>
                      <button
                         type="button"
                         class="btn btn-secondary"
                         data-bs-dismiss="modal"
                      >
-                        No, cancel
+                        No
                      </button>
                   </div>
                </div>
